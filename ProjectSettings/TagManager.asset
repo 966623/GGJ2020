@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Platform
   - Key
+  - Spike
   layers:
   - Default
   - TransparentFX

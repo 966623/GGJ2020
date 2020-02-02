@@ -272,13 +272,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4792cb3ab5eaa6f4e8ae5531ad91c9b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tapeCount: 0
+  tapeBounceCount: 0
+  tapeDashCount: 0
   playerSkin: {fileID: 11400000, guid: 52fbdf00de4e5ae4e89e147bee414cb3, type: 2}
+  tapeDisplay: {fileID: 0}
   wallMask:
     serializedVersion: 2
     m_Bits: 768
   platformMask:
     serializedVersion: 2
     m_Bits: 512
+  invulnTime: 2
   speed: 10
   startupTime: 0.1
   onGround: 0
@@ -306,7 +311,12 @@ MonoBehaviour:
   dashAudio:
   - {fileID: 8300000, guid: f36e1110ba8b0c742a1af13772922370, type: 3}
   - {fileID: 8300000, guid: 370576d0e715a3240a7b11637929e808, type: 3}
+  hurtAudio:
+  - {fileID: 8300000, guid: ef95a14dbb3d20c46a01776ca2f7dc0d, type: 3}
+  - {fileID: 8300000, guid: 31653a59e28039343a123af59eb525a6, type: 3}
+  - {fileID: 8300000, guid: fd76ba621ae3a4c47a1ed99cabd34fe3, type: 3}
   runningAudio: {fileID: 7078840251428910106}
+  health: 3
   hasKey: 0
 --- !u!95 &7078840251504405927
 Animator:

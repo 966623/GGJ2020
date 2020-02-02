@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FishSkin
   m_EditorClassIdentifier: 
   idle: {fileID: 9100000, guid: a62e419bc976a4c42939126226379344, type: 2}
-  run: {fileID: 9100000, guid: 1257f6bf08fe880439d3cb851a6bbb5e, type: 2}
+  run: {fileID: 9100000, guid: a1bf959f8463de14cba6e5e2ae98346c, type: 2}
   jump: {fileID: 9100000, guid: ce6ec07a754987d45a02e9fdef831047, type: 2}
   fall: {fileID: 9100000, guid: 8b200e06bf0229a439d6d1012e840a9c, type: 2}
   tape: {fileID: 9100000, guid: 47cfca4bdb8ef9742ac936e9083b3a25, type: 2}

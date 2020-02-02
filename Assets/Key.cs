@@ -21,6 +21,8 @@ public class Key : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             collision.gameObject.GetComponent<Player>().hasKey = true;
+            collision.gameObject.GetComponent<Player>().tapeDisplay.GotKey();
+
             Destroy(gameObject);
         }
     }

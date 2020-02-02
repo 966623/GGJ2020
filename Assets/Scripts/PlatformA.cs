@@ -18,12 +18,13 @@ public class PlatformA : MonoBehaviour
         SPEED
     }
 
+    public BoxCollider2D boxCollider2D;
     public Sprite brokenSprite;
     public Sprite okSprite;
     public Sprite fixedSprite;
     public SpriteRenderer spriteRenderer;
     public Status status = Status.BROKEN;
-
+    public Effect initialEffect = Effect.NONE;
     Effect privEffect = Effect.NONE;
     public Effect effect
     {
@@ -50,11 +51,12 @@ public class PlatformA : MonoBehaviour
     }
     public void Awake()
     {
+        boxCollider2D = GetComponent<BoxCollider2D>();
     }
     // Start is called before the first frame update
     void Start()
     {
-        SetStatus(status, effect);
+        SetStatus(status, initialEffect);
     }
 
     // Update is called once per frame
@@ -70,6 +72,7 @@ public class PlatformA : MonoBehaviour
         switch (status)
         {
             case Status.BROKEN:
+                boxCollider2D.isTrigger = true;
                 spriteRenderer.sprite = brokenSprite;
                 effect = Effect.NONE;
                 break;
@@ -78,6 +81,7 @@ public class PlatformA : MonoBehaviour
                 effect = Effect.NONE;
                 break;
             case Status.FIXED:
+                boxCollider2D.isTrigger = false;
                 spriteRenderer.sprite = fixedSprite;
                 effect = newEffect;
                 break;
