@@ -7,6 +7,7 @@ public class Alien : MonoBehaviour
 
     BoxCollider2D boxCollider2D;
     public GameObject beam;
+    public GameObject beamShadow;
     void Awake()
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
@@ -27,6 +28,7 @@ public class Alien : MonoBehaviour
         {
             timer = 2f;
             beam.SetActive(state);
+            beamShadow.SetActive(state);
             boxCollider2D.isTrigger = !state;
             state = !state;
         }

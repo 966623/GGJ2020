@@ -6,6 +6,9 @@ public class Hazard : MonoBehaviour
 {
 
     public Animator animator;
+    public RuntimeAnimatorController closeAnim;
+    public Animator shadowAnim;
+    bool activated = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,14 +23,21 @@ public class Hazard : MonoBehaviour
 
     void Activate()
     {
-        animator.SetBool("IsClosed", true);
+        animator.runtimeAnimatorController = closeAnim;
+        shadowAnim.runtimeAnimatorController = closeAnim;
+        activated = true;
+        gameObject.layer = 8;
+        GetComponent<BoxCollider2D>().size = new Vector2(1, 0.3f);
+        GetComponent<BoxCollider2D>().offset = new Vector2(-0.5f, 0.15f);
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (activated) return;
         if (collision.gameObject.CompareTag("Player"))
         {
-            Destroy(collision.gameObject);
+            collision.gameObject.GetComponent<Player>().TakeDamage();
             Activate();
         }
     }

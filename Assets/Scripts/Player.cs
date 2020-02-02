@@ -10,9 +10,11 @@ public class Player : MonoBehaviour
     public Skin playerSkin;
     public TapeDisplay tapeDisplay;
     Animator animator;
+    public Animator shadowAnim;
     public Rigidbody2D body;
     BoxCollider2D boxCollider;
     SpriteRenderer spriteRenderer;
+    public SpriteRenderer shadowRenderer;
     public LayerMask wallMask;
     public LayerMask platformMask;
     private float initialSpeed = 10f;
@@ -92,6 +94,7 @@ public class Player : MonoBehaviour
 
         initialSpeed = speed;
         animator.runtimeAnimatorController = playerSkin.idle;
+        shadowAnim.runtimeAnimatorController = playerSkin.idle;
     }
 
     // Update is called once per frame
@@ -145,7 +148,9 @@ public class Player : MonoBehaviour
             facingRight = true;
             xMove += speed * Time.deltaTime;
             animator.runtimeAnimatorController = playerSkin.run;
+            shadowAnim.runtimeAnimatorController = playerSkin.run;
             spriteRenderer.flipX = true;
+            shadowRenderer.flipX = true;
             runningAudio.volume = 1;
         }
         if (Input.GetKey(KeyCode.LeftArrow))
@@ -153,13 +158,16 @@ public class Player : MonoBehaviour
             facingLeft = true;
             xMove += -speed * Time.deltaTime;
             spriteRenderer.flipX = false;
+            shadowRenderer.flipX = false;
             animator.runtimeAnimatorController = playerSkin.run;
+            shadowAnim.runtimeAnimatorController = playerSkin.run;
             runningAudio.volume = 1;
         }
 
         if (xMove == 0)
         {
             animator.runtimeAnimatorController = playerSkin.idle;
+            shadowAnim.runtimeAnimatorController = playerSkin.idle;
         }
 
         if (xMove == 0 || !onGround)
@@ -271,10 +279,12 @@ public class Player : MonoBehaviour
             if (vVelocity > 0)
             {
                 animator.runtimeAnimatorController = playerSkin.jump;
+                shadowAnim.runtimeAnimatorController = playerSkin.jump;
             }
             else
             {
                 animator.runtimeAnimatorController = playerSkin.fall;
+                shadowAnim.runtimeAnimatorController = playerSkin.fall;
             }
         }
 
@@ -305,6 +315,7 @@ public class Player : MonoBehaviour
 
                 taping = true;
                 animator.runtimeAnimatorController = playerSkin.tape;
+                shadowAnim.runtimeAnimatorController = playerSkin.tape;
                 audioSource.clip = tapeAudio[Random.Range(0, 5)];
                 audioSource.Play();
             }
@@ -337,6 +348,7 @@ public class Player : MonoBehaviour
 
                 taping = true;
                 animator.runtimeAnimatorController = playerSkin.tape;
+                shadowAnim.runtimeAnimatorController = playerSkin.tape;
                 audioSource.clip = tapeAudio[Random.Range(0, 5)];
                 audioSource.Play();
             }
@@ -367,6 +379,7 @@ public class Player : MonoBehaviour
 
                 taping = true;
                 animator.runtimeAnimatorController = playerSkin.tape;
+                shadowAnim.runtimeAnimatorController = playerSkin.tape;
                 audioSource.clip = tapeAudio[Random.Range(0, 5)];
                 audioSource.Play();
             }
@@ -413,6 +426,7 @@ public class Player : MonoBehaviour
 
                 taping = true;
                 animator.runtimeAnimatorController = playerSkin.untape;
+                shadowAnim.runtimeAnimatorController = playerSkin.untape;
                 audioSource.clip = untapeAudio[Random.Range(0, 4)];
                 audioSource.Play();
             }
