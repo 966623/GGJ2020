@@ -9,5 +9,6 @@ public class Skin : ScriptableObject
     public RuntimeAnimatorController run;
     public RuntimeAnimatorController jump;
     public RuntimeAnimatorController fall;
-    public RuntimeAnimatorController action;
+    public RuntimeAnimatorController tape;
+    public RuntimeAnimatorController untape;
 }
