@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88808535fe00e3f4ba164ee39991f031, type: 3}
+  m_Name: TriangleSkin
+  m_EditorClassIdentifier: 
+  idle: {fileID: 9100000, guid: bd53f68b8ea168640af524f736aaa997, type: 2}
+  run: {fileID: 9100000, guid: 1257f6bf08fe880439d3cb851a6bbb5e, type: 2}
+  jump: {fileID: 9100000, guid: ce6ec07a754987d45a02e9fdef831047, type: 2}
+  fall: {fileID: 9100000, guid: 8b200e06bf0229a439d6d1012e840a9c, type: 2}
+  action: {fileID: 9100000, guid: a62e419bc976a4c42939126226379344, type: 2}
