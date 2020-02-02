@@ -49,7 +49,11 @@ MonoBehaviour:
   brokenSprite: {fileID: 21300000, guid: 15f5344b200281c4fa96dc44da452c05, type: 3}
   okSprite: {fileID: 21300000, guid: e7608b2dc80866a4084b59449d3747f8, type: 3}
   fixedSprite: {fileID: 21300000, guid: e7608b2dc80866a4084b59449d3747f8, type: 3}
+  bounceSprite: {fileID: 21300000, guid: 0a4beaa1912306549b9027f9be10a4da, type: 3}
+  dashSprite: {fileID: 21300000, guid: f5d0108c6ef78a445b715ce6f22941ad, type: 3}
   spriteRenderer: {fileID: 350300620136241107}
+  upgradeRenderer: {fileID: 0}
+  shadowRenderer: {fileID: 0}
   status: 0
   initialEffect: 0
 --- !u!61 &350300619699223390
