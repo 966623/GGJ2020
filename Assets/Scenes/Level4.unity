@@ -2328,7 +2328,7 @@ PrefabInstance:
     - target: {fileID: 7078840251504405932, guid: 50734ffbac1f21a46b76ef24de35faf0,
         type: 3}
       propertyPath: tapeBounceCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7078840251504405932, guid: 50734ffbac1f21a46b76ef24de35faf0,
         type: 3}

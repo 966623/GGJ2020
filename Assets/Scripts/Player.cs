@@ -210,17 +210,20 @@ public class Player : MonoBehaviour
                 vVelocity = 0;
                 yMove = -(floorHit.distance);
                 onGround = true;
-                dobreak = true; 
+                dobreak = true;
             }
 
             if (floorHit.collider != null && floorHit.collider.gameObject.CompareTag("Spike"))
             {
                 TakeDamage();
-                dobreak = true; 
+                dobreak = true;
             }
 
 
-            if (dobreak) break;
+            if (dobreak)
+            {
+                break;
+            }
         }
         body.MovePosition(body.position + new Vector2(xMove, yMove));
 
@@ -242,21 +245,32 @@ public class Player : MonoBehaviour
             onGround = false;
         }
 
-        RaycastHit2D hitBounce = Physics2D.BoxCast(body.position, boxCollider.size * 0.99f, 0, Vector2.down, 0.5f, platformMask);
-        if (hitBounce.collider && onGround)
+        RaycastHit2D[] hitBounces = Physics2D.BoxCastAll(body.position, boxCollider.size * 0.99f, 0, Vector2.down, 0.5f, platformMask);
+        foreach (var hitBounce in hitBounces)
         {
-            PlatformA platform = hitBounce.collider.GetComponent<PlatformA>();
-            if (platform != null && platform.effect == PlatformA.Effect.BOUNCE)
-            {
-                audioSource.clip = boingAudio[Random.Range(0, 2)];
-                audioSource.Play();
-                vVelocity = jumpStr * 2;
-                onGround = false;
-            }
-            if (platform != null && platform.effect == PlatformA.Effect.SPEED)
-            {
 
-                speed = initialSpeed * 3;
+            if (hitBounce.collider && onGround)
+            {
+                PlatformA platform = hitBounce.collider.GetComponent<PlatformA>();
+                if (platform != null && platform.effect == PlatformA.Effect.BOUNCE)
+                {
+                    audioSource.clip = boingAudio[Random.Range(0, 2)];
+                    audioSource.Play();
+                    vVelocity = jumpStr * 2;
+                    onGround = false;
+                }
+                if (platform != null && platform.effect == PlatformA.Effect.SPEED)
+                {
+
+                    speed = initialSpeed * 3;
+                }
+                else
+                {
+                    if (onGround)
+                    {
+                        speed = initialSpeed;
+                    }
+                }
             }
             else
             {
@@ -264,13 +278,6 @@ public class Player : MonoBehaviour
                 {
                     speed = initialSpeed;
                 }
-            }
-        }
-        else
-        {
-            if (onGround)
-            {
-                speed = initialSpeed;
             }
         }
 
@@ -293,31 +300,36 @@ public class Player : MonoBehaviour
         //repair
         if (Input.GetKeyDown(KeyCode.Z) && onGround)
         {
-            RaycastHit2D hit = Physics2D.BoxCast(
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(
                 body.position + new Vector2(0, -0.5f), boxCollider.size * 0.99f, 0, facingRight ? Vector2.right : Vector2.left,
                 boxCollider.size.x, platformMask);
-            if (hit.collider && hit.distance > 0)
+            foreach (var hit in hits)
             {
 
-
-                PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
-                if (platform == null || platform.effect != PlatformA.Effect.NONE || tapeBounceCount <= 0)
+                if (hit.collider && hit.distance > 0)
                 {
-                    return;
+
+
+                    PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
+                    if (platform == null || platform.effect != PlatformA.Effect.NONE || platform.status != PlatformA.Status.FIXED || tapeBounceCount <= 0)
+                    {
+                        return;
+                    }
+                    tapeAction = () =>
+                    {
+
+                        platform.SetStatus(PlatformA.Status.FIXED, PlatformA.Effect.BOUNCE);
+                        tapeDisplay.gbRemove();
+                        tapeBounceCount--;
+                    };
+
+                    taping = true;
+                    animator.runtimeAnimatorController = playerSkin.tape;
+                    shadowAnim.runtimeAnimatorController = playerSkin.tape;
+                    audioSource.clip = tapeAudio[Random.Range(0, 5)];
+                    audioSource.Play();
+                    break;
                 }
-                tapeAction = () =>
-                {
-
-                    platform.SetStatus(PlatformA.Status.FIXED, PlatformA.Effect.BOUNCE);
-                    tapeDisplay.gbRemove();
-                    tapeBounceCount--;
-                };
-
-                taping = true;
-                animator.runtimeAnimatorController = playerSkin.tape;
-                shadowAnim.runtimeAnimatorController = playerSkin.tape;
-                audioSource.clip = tapeAudio[Random.Range(0, 5)];
-                audioSource.Play();
             }
 
 
@@ -326,109 +338,125 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.X) && onGround)
         {
-            RaycastHit2D hit = Physics2D.BoxCast(
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(
                 body.position + new Vector2(0, -0.5f), boxCollider.size * 0.99f, 0, facingRight ? Vector2.right : Vector2.left,
                 boxCollider.size.x, platformMask);
-            if (hit.collider && hit.distance > 0)
+            foreach (var hit in hits)
             {
 
-                PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
-                if (platform == null || platform.effect != PlatformA.Effect.NONE || tapeDashCount <= 0)
+                if (hit.collider && hit.distance > 0)
                 {
-                    return;
+
+                    PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
+                    if (platform == null || platform.effect != PlatformA.Effect.NONE || platform.status != PlatformA.Status.FIXED || tapeDashCount <= 0)
+                    {
+                        return;
+                    }
+                    tapeAction = () =>
+                    {
+
+
+                        platform.SetStatus(PlatformA.Status.FIXED, PlatformA.Effect.SPEED);
+                        tapeDisplay.gdRemove();
+                        tapeDashCount--;
+                    };
+
+                    taping = true;
+                    animator.runtimeAnimatorController = playerSkin.tape;
+                    shadowAnim.runtimeAnimatorController = playerSkin.tape;
+                    audioSource.clip = tapeAudio[Random.Range(0, 5)];
+                    audioSource.Play();
+                    break;
                 }
-                tapeAction = () =>
-                {
-
-
-                    platform.SetStatus(PlatformA.Status.FIXED, PlatformA.Effect.SPEED);
-                    tapeDisplay.gdRemove();
-                    tapeDashCount--;
-                };
-
-                taping = true;
-                animator.runtimeAnimatorController = playerSkin.tape;
-                shadowAnim.runtimeAnimatorController = playerSkin.tape;
-                audioSource.clip = tapeAudio[Random.Range(0, 5)];
-                audioSource.Play();
             }
 
         }
 
         if (Input.GetKeyDown(KeyCode.C) && onGround)
         {
-            RaycastHit2D hit = Physics2D.BoxCast(
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(
                 body.position + new Vector2(0, -0.5f), boxCollider.size * 0.99f, 0, facingRight ? Vector2.right : Vector2.left,
                 boxCollider.size.x, platformMask);
-            if (hit.collider && hit.distance > 0)
+            foreach (var hit in hits)
             {
+                if (hit.collider && hit.distance > 0)
 
-                PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
-                if (platform == null || platform.effect != PlatformA.Effect.NONE || tapeCount <= 0)
                 {
-                    return;
+
+                    PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
+                    if (platform == null || platform.effect != PlatformA.Effect.NONE || platform.status != PlatformA.Status.BROKEN || tapeCount <= 0)
+                    {
+                        return;
+                    }
+                    tapeAction = () =>
+                    {
+
+
+                        platform.SetStatus(PlatformA.Status.FIXED, PlatformA.Effect.NONE);
+                        tapeDisplay.g1Remove();
+                        tapeCount--;
+                    };
+
+                    taping = true;
+                    animator.runtimeAnimatorController = playerSkin.tape;
+                    shadowAnim.runtimeAnimatorController = playerSkin.tape;
+                    audioSource.clip = tapeAudio[Random.Range(0, 5)];
+                    audioSource.Play();
+                    break;
                 }
-                tapeAction = () =>
-                {
-
-
-                    platform.SetStatus(PlatformA.Status.FIXED, PlatformA.Effect.NONE);
-                    tapeDisplay.g1Remove();
-                    tapeCount--;
-                };
-
-                taping = true;
-                animator.runtimeAnimatorController = playerSkin.tape;
-                shadowAnim.runtimeAnimatorController = playerSkin.tape;
-                audioSource.clip = tapeAudio[Random.Range(0, 5)];
-                audioSource.Play();
             }
 
         }
 
 
         //retrieve
-        //repair
         if (Input.GetKeyDown(KeyCode.V) && onGround)
         {
-            RaycastHit2D hit = Physics2D.BoxCast(
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(
                 body.position + new Vector2(0, -0.5f), new Vector2(1, 1), 0, facingRight ? Vector2.right : Vector2.left,
                 1, platformMask);
-            if (hit.collider)
+            foreach (var hit in hits)
             {
-                PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
-                if (platform == null || platform.status == PlatformA.Status.BROKEN)
-                {
-                    return;
-                }
-                tapeAction = () =>
-                {
 
-                    switch (platform.effect)
+                if (hit.collider)
+                {
+                    PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
+                    if (platform == null || platform.status == PlatformA.Status.BROKEN)
                     {
-                        case PlatformA.Effect.NONE:
-                            tapeDisplay.g1Add();
-                            tapeCount++;
-                            break;
-                        case PlatformA.Effect.BOUNCE:
-                            tapeDisplay.gbAdd();
-                            tapeBounceCount++;
-                            break;
-                        case PlatformA.Effect.SPEED:
-                            tapeDisplay.gdAdd();
-                            tapeDashCount++;
-                            break;
-                        default:
-                            break;
+                        return;
                     }
-                    platform.SetStatus(PlatformA.Status.BROKEN, PlatformA.Effect.NONE);
-                };
+                    tapeAction = () =>
+                    {
 
-                taping = true;
-                animator.runtimeAnimatorController = playerSkin.untape;
-                shadowAnim.runtimeAnimatorController = playerSkin.untape;
-                audioSource.clip = untapeAudio[Random.Range(0, 4)];
-                audioSource.Play();
+                        switch (platform.effect)
+                        {
+                            case PlatformA.Effect.NONE:
+                                tapeDisplay.g1Add();
+                                tapeCount++;
+                                platform.SetStatus(PlatformA.Status.BROKEN, PlatformA.Effect.NONE);
+                                break;
+                            case PlatformA.Effect.BOUNCE:
+                                tapeDisplay.gbAdd();
+                                tapeBounceCount++;
+                                platform.SetStatus(PlatformA.Status.FIXED, PlatformA.Effect.NONE);
+                                break;
+                            case PlatformA.Effect.SPEED:
+                                tapeDisplay.gdAdd();
+                                tapeDashCount++;
+                                platform.SetStatus(PlatformA.Status.FIXED, PlatformA.Effect.NONE);
+                                break;
+                            default:
+                                break;
+                        }
+                    };
+
+                    taping = true;
+                    animator.runtimeAnimatorController = playerSkin.untape;
+                    shadowAnim.runtimeAnimatorController = playerSkin.untape;
+                    audioSource.clip = untapeAudio[Random.Range(0, 4)];
+                    audioSource.Play();
+                    break;
+                }
             }
 
         }

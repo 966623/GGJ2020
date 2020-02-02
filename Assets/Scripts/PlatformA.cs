@@ -24,9 +24,11 @@ public class PlatformA : MonoBehaviour
     public Sprite fixedSprite;
     public Sprite bounceSprite;
     public Sprite dashSprite;
+    public Sprite tapeSprite;
     public SpriteRenderer spriteRenderer;
     public SpriteRenderer upgradeRenderer;
     public SpriteRenderer shadowRenderer;
+    GameObject tapeObject;
     public Status status = Status.BROKEN;
     public Effect initialEffect = Effect.NONE;
     Effect privEffect = Effect.NONE;
@@ -72,11 +74,20 @@ public class PlatformA : MonoBehaviour
 
         GameObject upg = Instantiate(spriteRenderer.gameObject);
         upg.transform.parent = transform;
-        upg.transform.localPosition = spriteRenderer.gameObject.transform.localPosition + new Vector3(0.27f, 0.21f);
-        upg.transform.localScale = spriteRenderer.gameObject.transform.localScale * 0.5f;
+        upg.transform.localPosition =  new Vector3(0.27f, 0.21f);
+        upg.transform.localScale = new Vector3(.5f, .5f);
         upg.transform.localRotation = spriteRenderer.gameObject.transform.localRotation;
-        upg.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        upg.GetComponent<SpriteRenderer>().sortingOrder = 2;
         upgradeRenderer = upg.GetComponent<SpriteRenderer>();
+
+        GameObject fixStick = Instantiate(spriteRenderer.gameObject);
+        fixStick.transform.parent = transform;
+        fixStick.transform.localPosition = new Vector3(-.1f, 0.36f);
+        fixStick.transform.localScale = new Vector3(.045f, .055f);
+        fixStick.transform.localRotation = Quaternion.Euler(0, 0, -69);
+        fixStick.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        fixStick.GetComponent<SpriteRenderer>().sprite = tapeSprite;
+        tapeObject = fixStick;
         SetStatus(status, initialEffect);
 
 
@@ -95,6 +106,7 @@ public class PlatformA : MonoBehaviour
         switch (status)
         {
             case Status.BROKEN:
+                tapeObject.SetActive(false);
                 boxCollider2D.isTrigger = true;
                 spriteRenderer.sprite = brokenSprite;
                 shadowRenderer.sprite = brokenSprite;
@@ -106,6 +118,7 @@ public class PlatformA : MonoBehaviour
                 effect = Effect.NONE;
                 break;
             case Status.FIXED:
+                tapeObject.SetActive(true);
                 boxCollider2D.isTrigger = false;
                 spriteRenderer.sprite = fixedSprite;
                 shadowRenderer.sprite = fixedSprite;

@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 350300619699223388}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.79, y: -1.82, z: 0.066047855}
+  m_LocalPosition: {x: 0, y: 0, z: 0.066047855}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 350300620136241106}
@@ -46,11 +46,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxCollider2D: {fileID: 0}
-  brokenSprite: {fileID: 21300000, guid: 15f5344b200281c4fa96dc44da452c05, type: 3}
-  okSprite: {fileID: 21300000, guid: e7608b2dc80866a4084b59449d3747f8, type: 3}
-  fixedSprite: {fileID: 21300000, guid: e7608b2dc80866a4084b59449d3747f8, type: 3}
+  brokenSprite: {fileID: 21300000, guid: e7608b2dc80866a4084b59449d3747f8, type: 3}
+  okSprite: {fileID: 21300000, guid: 39582f05c336f324aada0d2b0c5fdcc5, type: 3}
+  fixedSprite: {fileID: 21300000, guid: 39582f05c336f324aada0d2b0c5fdcc5, type: 3}
   bounceSprite: {fileID: 21300000, guid: 0a4beaa1912306549b9027f9be10a4da, type: 3}
   dashSprite: {fileID: 21300000, guid: f5d0108c6ef78a445b715ce6f22941ad, type: 3}
+  tapeSprite: {fileID: 21300000, guid: 8b82d8218f7dead428fedfa9c18ff4d5, type: 3}
   spriteRenderer: {fileID: 350300620136241107}
   upgradeRenderer: {fileID: 0}
   shadowRenderer: {fileID: 0}
@@ -150,7 +151,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e7608b2dc80866a4084b59449d3747f8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 39582f05c336f324aada0d2b0c5fdcc5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
