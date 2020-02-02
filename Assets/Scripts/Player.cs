@@ -193,25 +193,43 @@ public class Player : MonoBehaviour
         vVelocity += gravity * Time.deltaTime;
         yMove = vVelocity * Time.deltaTime;
 
-        RaycastHit2D floorHit = Physics2D.BoxCast(body.position, boxCollider.size, 0, Vector2.down, Mathf.Abs(yMove), wallMask);
-        if (floorHit.collider != null && vVelocity < 0 && !floorHit.collider.isTrigger)
+        RaycastHit2D[] floorHits = Physics2D.BoxCastAll(body.position, boxCollider.size, 0, Vector2.down, Mathf.Abs(yMove), wallMask);
+        foreach (var floorHit in floorHits)
         {
-            vVelocity = 0;
-            yMove = -(floorHit.distance);
-            onGround = true;
+            bool dobreak = false; ;
+            if (floorHit.collider != null && vVelocity < 0 && !floorHit.collider.isTrigger)
+            {
+                vVelocity = 0;
+                yMove = -(floorHit.distance);
+                onGround = true;
+                dobreak = true; 
+            }
+
+            if (floorHit.collider != null && floorHit.collider.gameObject.CompareTag("Spike"))
+            {
+                TakeDamage();
+                dobreak = true; 
+            }
+
+
+            if (dobreak) break;
         }
-
-        if (floorHit.collider != null && floorHit.collider.gameObject.CompareTag("Spike"))
-        {
-            TakeDamage();
-
-        }
-
-
         body.MovePosition(body.position + new Vector2(xMove, yMove));
 
-        floorHit = Physics2D.BoxCast(body.position, boxCollider.size, 0, Vector2.down, Mathf.Abs(0.1f), wallMask);
-        if (floorHit.collider == null && vVelocity < 0 && onGround)
+        bool hitAny = false;
+        floorHits = Physics2D.BoxCastAll(body.position, boxCollider.size, 0, Vector2.down, Mathf.Abs(0.1f), wallMask);
+        foreach (var floorHit in floorHits)
+        {
+
+            if ((floorHit.collider == null || floorHit.collider.isTrigger) && vVelocity < 0 && onGround)
+            {
+            }
+            else
+            {
+                hitAny = true;
+            }
+        }
+        if (!hitAny)
         {
             onGround = false;
         }
@@ -270,7 +288,7 @@ public class Player : MonoBehaviour
                 boxCollider.size.x, platformMask);
             if (hit.collider && hit.distance > 0)
             {
-               
+
 
                 PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
                 if (platform == null || platform.effect != PlatformA.Effect.NONE || tapeBounceCount <= 0)
@@ -299,10 +317,10 @@ public class Player : MonoBehaviour
         {
             RaycastHit2D hit = Physics2D.BoxCast(
                 body.position + new Vector2(0, -0.5f), boxCollider.size * 0.99f, 0, facingRight ? Vector2.right : Vector2.left,
-                boxCollider.size.x , platformMask);
+                boxCollider.size.x, platformMask);
             if (hit.collider && hit.distance > 0)
             {
-               
+
                 PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
                 if (platform == null || platform.effect != PlatformA.Effect.NONE || tapeDashCount <= 0)
                 {
@@ -332,7 +350,7 @@ public class Player : MonoBehaviour
                 boxCollider.size.x, platformMask);
             if (hit.collider && hit.distance > 0)
             {
-               
+
                 PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
                 if (platform == null || platform.effect != PlatformA.Effect.NONE || tapeCount <= 0)
                 {
