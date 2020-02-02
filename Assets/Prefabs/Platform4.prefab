@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxCollider2D: {fileID: 0}
-  brokenSprite: {fileID: 21300000, guid: c907c3d8a90dfd2429cd6a34117766fa, type: 3}
-  okSprite: {fileID: 21300000, guid: c907c3d8a90dfd2429cd6a34117766fa, type: 3}
+  brokenSprite: {fileID: 21300000, guid: 5a935fa98abe76e458f1158c17fcf627, type: 3}
+  okSprite: {fileID: 21300000, guid: b0a8b00a7954d0c40b5530d9a0064d94, type: 3}
   fixedSprite: {fileID: 21300000, guid: c907c3d8a90dfd2429cd6a34117766fa, type: 3}
   bounceSprite: {fileID: 21300000, guid: 0a4beaa1912306549b9027f9be10a4da, type: 3}
   dashSprite: {fileID: 21300000, guid: f5d0108c6ef78a445b715ce6f22941ad, type: 3}

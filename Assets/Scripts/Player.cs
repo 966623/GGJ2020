@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
         }
 
         health--;
+        healthUI.SetHealth(health);
         if (health <= 0)
         {
             Destroy(gameObject);
@@ -57,6 +58,7 @@ public class Player : MonoBehaviour
     public List<AudioClip> dashAudio = new List<AudioClip>();
     public List<AudioClip> hurtAudio = new List<AudioClip>();
     AudioSource audioSource;
+    public Health healthUI;
     public AudioSource runningAudio;
 
     public int health = 3;
