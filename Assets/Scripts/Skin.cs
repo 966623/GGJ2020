@@ -11,4 +11,5 @@ public class Skin : ScriptableObject
     public RuntimeAnimatorController fall;
     public RuntimeAnimatorController tape;
     public RuntimeAnimatorController untape;
+    public RuntimeAnimatorController death;
 }

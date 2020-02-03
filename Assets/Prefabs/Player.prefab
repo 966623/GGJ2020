@@ -388,12 +388,12 @@ MonoBehaviour:
     m_Bits: 512
   invulnTime: 2
   stunTime: 0.5
-  speed: 10
+  speed: 5
   startupTime: 0.1
   onGround: 0
   taping: 0
-  gravity: -80
-  jumpStr: 25
+  gravity: -40
+  jumpStr: 12.5
   jumpAudio:
   - {fileID: 8300000, guid: 2b86fc5bb858fc34cba0bfb2fcfff30d, type: 3}
   - {fileID: 8300000, guid: c6739a940b600854e9eb3c19ed98748b, type: 3}
@@ -407,8 +407,17 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 810741da24bd01441a591d6cd660b9bb, type: 3}
   - {fileID: 8300000, guid: bd7e38b28d3028f41b398a7cb06d6981, type: 3}
   - {fileID: 8300000, guid: a64e7d73e6668bc41997c680a6340ba1, type: 3}
-  - {fileID: 8300000, guid: e8af00cb01a42d6498ed72562dcde08d, type: 3}
-  - {fileID: 8300000, guid: cbc0c205e4aa8d94f9b2f0a197266928, type: 3}
+  specialAudio:
+  - {fileID: 8300000, guid: 58200be4b3b678248a8cf56c1c46b014, type: 3}
+  - {fileID: 8300000, guid: 58200be4b3b678248a8cf56c1c46b014, type: 3}
+  - {fileID: 8300000, guid: 216524aaf9b17674482cbde71547c642, type: 3}
+  - {fileID: 8300000, guid: 216524aaf9b17674482cbde71547c642, type: 3}
+  - {fileID: 8300000, guid: 82d60152e761ec5439a29b7c95770315, type: 3}
+  - {fileID: 8300000, guid: 82d60152e761ec5439a29b7c95770315, type: 3}
+  - {fileID: 8300000, guid: 58200be4b3b678248a8cf56c1c46b014, type: 3}
+  - {fileID: 8300000, guid: f26c6d68f43a62547bfad42c9deb75e3, type: 3}
+  - {fileID: 8300000, guid: c81662b1263f8cb47864d039e13bd0cd, type: 3}
+  - {fileID: 8300000, guid: c81662b1263f8cb47864d039e13bd0cd, type: 3}
   boingAudio:
   - {fileID: 8300000, guid: 335705c1794e4c548b2ab842578c2991, type: 3}
   - {fileID: 8300000, guid: 1933a6dfb40e39b4aa316cd1794566b0, type: 3}
@@ -419,6 +428,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ef95a14dbb3d20c46a01776ca2f7dc0d, type: 3}
   - {fileID: 8300000, guid: 31653a59e28039343a123af59eb525a6, type: 3}
   - {fileID: 8300000, guid: fd76ba621ae3a4c47a1ed99cabd34fe3, type: 3}
+  deadAudio:
+  - {fileID: 8300000, guid: 37778442eca5c2b4fa778ec33c64fa95, type: 3}
+  - {fileID: 8300000, guid: 6aee2fd3fd3c3b3499adeb13223ac61c, type: 3}
+  healthUI: {fileID: 0}
   runningAudio: {fileID: 7078840251428910106}
   health: 3
   hasKey: 0

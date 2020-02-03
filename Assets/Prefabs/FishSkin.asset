@@ -18,3 +18,4 @@ MonoBehaviour:
   fall: {fileID: 9100000, guid: 8b200e06bf0229a439d6d1012e840a9c, type: 2}
   tape: {fileID: 9100000, guid: 47cfca4bdb8ef9742ac936e9083b3a25, type: 2}
   untape: {fileID: 9100000, guid: ac8c2d192b472e543a9829229156cd5d, type: 2}
+  death: {fileID: 9100000, guid: bd8386cb125e03647aac2808910ef1df, type: 2}

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class Player : MonoBehaviour
 
     public float invulnTime = 2f;
     public float stunTime = 0.5f;
+
+    bool isDead;
+    float deadTime = 2f;
     public void TakeDamage()
     {
         if (invulnTime > 0)
@@ -32,8 +36,14 @@ public class Player : MonoBehaviour
         healthUI.SetHealth(health);
         if (health <= 0)
         {
-            Destroy(gameObject);
-
+            isDead = true;
+            audioSource.clip = deadAudio[Random.Range(0, 2)];
+            runningAudio.Stop();
+            audioSource.Play();
+            deadTime = 2f;
+            animator.runtimeAnimatorController = playerSkin.death;
+            shadowAnim.runtimeAnimatorController = playerSkin.death;
+            return;
         }
         vVelocity = jumpStr * 0.5f;
         onGround = false;
@@ -54,9 +64,11 @@ public class Player : MonoBehaviour
     public List<AudioClip> jumpAudio = new List<AudioClip>();
     public List<AudioClip> untapeAudio = new List<AudioClip>();
     public List<AudioClip> tapeAudio = new List<AudioClip>();
+    public List<AudioClip> specialAudio = new List<AudioClip>();
     public List<AudioClip> boingAudio = new List<AudioClip>();
     public List<AudioClip> dashAudio = new List<AudioClip>();
     public List<AudioClip> hurtAudio = new List<AudioClip>();
+    public List<AudioClip> deadAudio = new List<AudioClip>();
     AudioSource audioSource;
     public Health healthUI;
     public AudioSource runningAudio;
@@ -75,6 +87,8 @@ public class Player : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
     }
     // Start is called before the first frame update
     void Start()
@@ -102,7 +116,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (taping)
+        if (taping || stunTime > 0)
         {
             return;
         }
@@ -116,7 +130,32 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        invulnTime -= Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+        if (isDead)
+        {
+            if (deadTime < 0)
+            {
+                Scene scene = SceneManager.GetActiveScene();
+                SceneManager.LoadScene(scene.name);
+            }
+            else
+            {
+                deadTime -= Time.deltaTime;
+                return;
+            }
+        }
+        if (body.position.y < -15)
+        {
+            health -= 3;
+            TakeDamage();
+            return;
+        }
+
+
+            invulnTime -= Time.deltaTime;
         if (invulnTime <= 0)
         {
             spriteRenderer.color = new Color(1, 1, 1, 1);
@@ -282,6 +321,13 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        if (hitBounces.Length <= 0)
+        {
+            if (onGround)
+            {
+                speed = initialSpeed;
+            }
+        }
 
         if (!onGround)
         {
@@ -303,9 +349,11 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z) && onGround)
         {
             RaycastHit2D[] hits = Physics2D.BoxCastAll(
-                body.position + new Vector2(0, -0.5f), boxCollider.size * 0.99f, 0, facingRight ? Vector2.right : Vector2.left,
-                boxCollider.size.x, platformMask);
-            foreach (var hit in hits)
+                body.position + new Vector2(0, -0f), boxCollider.size * 0.99f, 0, (facingRight ? Vector2.right : Vector2.left) + Vector2.down,
+                boxCollider.size.x * 1.4f, platformMask);
+            List<RaycastHit2D> hitsList = new List<RaycastHit2D>(hits);
+            hitsList.Sort((p1, p2) => p2.transform.position.y.CompareTo(p1.transform.position.y));
+            foreach (var hit in hitsList)
             {
 
                 if (hit.collider && hit.distance > 0)
@@ -315,7 +363,7 @@ public class Player : MonoBehaviour
                     PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
                     if (platform == null || platform.effect != PlatformA.Effect.NONE || platform.status != PlatformA.Status.FIXED || tapeBounceCount <= 0)
                     {
-                        return;
+                        continue;
                     }
                     tapeAction = () =>
                     {
@@ -328,7 +376,7 @@ public class Player : MonoBehaviour
                     taping = true;
                     animator.runtimeAnimatorController = playerSkin.tape;
                     shadowAnim.runtimeAnimatorController = playerSkin.tape;
-                    audioSource.clip = tapeAudio[Random.Range(0, 5)];
+                    audioSource.clip = specialAudio[Random.Range(0, 10)];
                     audioSource.Play();
                     break;
                 }
@@ -341,9 +389,11 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X) && onGround)
         {
             RaycastHit2D[] hits = Physics2D.BoxCastAll(
-                body.position + new Vector2(0, -0.5f), boxCollider.size * 0.99f, 0, facingRight ? Vector2.right : Vector2.left,
-                boxCollider.size.x, platformMask);
-            foreach (var hit in hits)
+                body.position + new Vector2(0, -0f), boxCollider.size * 0.99f, 0, (facingRight ? Vector2.right : Vector2.left) + Vector2.down,
+                boxCollider.size.x * 1.4f, platformMask);
+            List<RaycastHit2D> hitsList = new List<RaycastHit2D>(hits);
+            hitsList.Sort((p1, p2) => p2.transform.position.y.CompareTo(p1.transform.position.y));
+            foreach (var hit in hitsList)
             {
 
                 if (hit.collider && hit.distance > 0)
@@ -352,7 +402,7 @@ public class Player : MonoBehaviour
                     PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
                     if (platform == null || platform.effect != PlatformA.Effect.NONE || platform.status != PlatformA.Status.FIXED || tapeDashCount <= 0)
                     {
-                        return;
+                        continue;
                     }
                     tapeAction = () =>
                     {
@@ -366,7 +416,7 @@ public class Player : MonoBehaviour
                     taping = true;
                     animator.runtimeAnimatorController = playerSkin.tape;
                     shadowAnim.runtimeAnimatorController = playerSkin.tape;
-                    audioSource.clip = tapeAudio[Random.Range(0, 5)];
+                    audioSource.clip = specialAudio[Random.Range(0, 10)];
                     audioSource.Play();
                     break;
                 }
@@ -377,9 +427,11 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C) && onGround)
         {
             RaycastHit2D[] hits = Physics2D.BoxCastAll(
-                body.position + new Vector2(0, -0.5f), boxCollider.size * 0.99f, 0, facingRight ? Vector2.right : Vector2.left,
-                boxCollider.size.x, platformMask);
-            foreach (var hit in hits)
+                body.position + new Vector2(0, -0f), boxCollider.size * 0.99f, 0, (facingRight ? Vector2.right : Vector2.left) + Vector2.down,
+                boxCollider.size.x * 1.4f, platformMask);
+            List<RaycastHit2D> hitsList = new List<RaycastHit2D>(hits);
+            hitsList.Sort((p1, p2) => p2.transform.position.y.CompareTo(p1.transform.position.y));
+            foreach (var hit in hitsList)
             {
                 if (hit.collider && hit.distance > 0)
 
@@ -388,7 +440,7 @@ public class Player : MonoBehaviour
                     PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
                     if (platform == null || platform.effect != PlatformA.Effect.NONE || platform.status != PlatformA.Status.BROKEN || tapeCount <= 0)
                     {
-                        return;
+                        continue;
                     }
                     tapeAction = () =>
                     {
@@ -402,7 +454,7 @@ public class Player : MonoBehaviour
                     taping = true;
                     animator.runtimeAnimatorController = playerSkin.tape;
                     shadowAnim.runtimeAnimatorController = playerSkin.tape;
-                    audioSource.clip = tapeAudio[Random.Range(0, 5)];
+                    audioSource.clip = tapeAudio[Random.Range(0, 3)];
                     audioSource.Play();
                     break;
                 }
@@ -415,9 +467,11 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V) && onGround)
         {
             RaycastHit2D[] hits = Physics2D.BoxCastAll(
-                body.position + new Vector2(0, -0.5f), new Vector2(1, 1), 0, facingRight ? Vector2.right : Vector2.left,
-                1, platformMask);
-            foreach (var hit in hits)
+                body.position + new Vector2(0, -0f), boxCollider.size * 0.99f, 0, (facingRight ? Vector2.right : Vector2.left) + Vector2.down,
+                boxCollider.size.x * 1.4f, platformMask);
+            List<RaycastHit2D> hitsList = new List<RaycastHit2D>(hits);
+            hitsList.Sort((p1, p2) => p2.transform.position.y.CompareTo(p1.transform.position.y));
+            foreach (var hit in hitsList)
             {
 
                 if (hit.collider)
@@ -425,7 +479,7 @@ public class Player : MonoBehaviour
                     PlatformA platform = hit.collider.gameObject.GetComponent<PlatformA>();
                     if (platform == null || platform.status == PlatformA.Status.BROKEN)
                     {
-                        return;
+                        continue;
                     }
                     tapeAction = () =>
                     {
