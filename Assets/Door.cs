@@ -24,7 +24,7 @@ public class Door : MonoBehaviour
         {
             if (collision.gameObject.GetComponent<Player>().hasKey)
             {
-                SceneManager.LoadScene(nextLevel, LoadSceneMode.Single);
+                collision.gameObject.GetComponent<Player>().DoWin(nextLevel);
             }
         }
     }

@@ -8,8 +8,10 @@ public class Alien : MonoBehaviour
     BoxCollider2D boxCollider2D;
     public GameObject beam;
     public GameObject beamShadow;
+    AudioSource audioSource;
     void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         boxCollider2D = GetComponent<BoxCollider2D>();
     }
     // Start is called before the first frame update
@@ -40,7 +42,8 @@ public class Alien : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<Player>().TakeDamage();
+
+            audioSource.Play();
             if (collision.gameObject.GetComponent<Player>().transform.position.x < transform.position.x)
             {
                 collision.gameObject.GetComponent<Player>().body.gravityScale = 1;

@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Spike : MonoBehaviour
 {
+
+    public AudioSource audioSource;
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -14,6 +20,11 @@ public class Spike : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void PlayAudio()
+    {
+        audioSource.Play();
     }
 
 

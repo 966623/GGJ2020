@@ -20,16 +20,24 @@ public class Player : MonoBehaviour
     public LayerMask platformMask;
     private float initialSpeed = 10f;
 
-    public float invulnTime = 2f;
+    float invulnTime = 0f;
+
+    internal void DoWin(string nextLevel)
+    {
+        isWin = true;
+        SceneManager.LoadScene(nextLevel, LoadSceneMode.Single);
+    }
+
     public float stunTime = 0.5f;
 
     bool isDead;
+    bool isWin;
     float deadTime = 2f;
-    public void TakeDamage()
+    public bool TakeDamage()
     {
         if (invulnTime > 0)
         {
-            return;
+            return false;
         }
 
         health--;
@@ -43,7 +51,7 @@ public class Player : MonoBehaviour
             deadTime = 2f;
             animator.runtimeAnimatorController = playerSkin.death;
             shadowAnim.runtimeAnimatorController = playerSkin.death;
-            return;
+            return false;
         }
         vVelocity = jumpStr * 0.5f;
         onGround = false;
@@ -52,6 +60,7 @@ public class Player : MonoBehaviour
         invulnTime = 2f;
         stunTime = 0.5f;
         spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+        return true;
     }
 
     public float speed = 10f;
@@ -147,7 +156,7 @@ public class Player : MonoBehaviour
                 return;
             }
         }
-        if (body.position.y < -15)
+        if (body.position.y < -35)
         {
             health -= 3;
             TakeDamage();
@@ -155,7 +164,7 @@ public class Player : MonoBehaviour
         }
 
 
-            invulnTime -= Time.deltaTime;
+        invulnTime -= Time.deltaTime;
         if (invulnTime <= 0)
         {
             spriteRenderer.color = new Color(1, 1, 1, 1);
@@ -219,7 +228,7 @@ public class Player : MonoBehaviour
 
 
         //jump
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             Debug.Log("SpacePressed");
             if (onGround)
@@ -256,7 +265,11 @@ public class Player : MonoBehaviour
 
             if (floorHit.collider != null && floorHit.collider.gameObject.CompareTag("Spike"))
             {
-                TakeDamage();
+                if (TakeDamage())
+                {
+                    floorHit.collider.gameObject.GetComponent<Spike>()?.PlayAudio();
+
+                }
                 dobreak = true;
             }
 

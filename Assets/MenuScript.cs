@@ -26,4 +26,9 @@ public class MenuScript : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void Load(string level)
+    {
+        SceneManager.LoadScene(level);
+    }
 }

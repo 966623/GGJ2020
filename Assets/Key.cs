@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class Key : MonoBehaviour
 {
+    AudioSource audioSource;
+
+
+    bool gotten = false;
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -13,17 +22,24 @@ public class Key : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+ 
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (gotten)
+        {
+            return;
+        }
         if (collision.gameObject.CompareTag("Player"))
         {
+            gotten = true;
             collision.gameObject.GetComponent<Player>().hasKey = true;
             collision.gameObject.GetComponent<Player>().tapeDisplay.GotKey();
-
-            Destroy(gameObject);
+            audioSource.Play();
+            GetComponent<SpriteRenderer>().enabled = false;
+            GetComponent<BoxCollider2D>().enabled = false;
+            Destroy(transform.GetChild(0).gameObject);
         }
     }
 }

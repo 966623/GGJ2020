@@ -82,7 +82,7 @@ public class PlatformA : MonoBehaviour
 
         GameObject fixStick = Instantiate(spriteRenderer.gameObject);
         fixStick.transform.parent = transform;
-        fixStick.transform.localPosition = new Vector3(-.1f, 0.36f);
+        fixStick.transform.localPosition = new Vector3(0f, 0.36f);
         fixStick.transform.localScale = new Vector3(.045f, .055f);
         fixStick.transform.localRotation = Quaternion.Euler(0, 0, -69);
         fixStick.GetComponent<SpriteRenderer>().sortingOrder = 1;
