@@ -96,8 +96,6 @@ public class Player : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 60;
     }
     // Start is called before the first frame update
     void Start()
