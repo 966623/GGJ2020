@@ -23,6 +23,23 @@ public class Player : MonoBehaviour
     public int initialBounceTapeCount = 0;
     public int initialDashTapeCount = 0;
 
+    int[] tapeInventory = new int[System.Enum.GetNames(typeof(Platform.Effect)).Length];
+
+    public int GetTapeCount(Platform.Effect effect = Platform.Effect.NONE)
+    {
+        return tapeInventory[(int)effect];
+    }
+
+    public void AddTape(Platform.Effect effect = Platform.Effect.NONE)
+    {
+        tapeInventory[(int)effect]++;
+    }
+
+    public void RemoveTape(Platform.Effect effect = Platform.Effect.NONE)
+    {
+        tapeInventory[(int)effect]--;
+    }
+
     public UnityEvent TapeCountChanged;
     int _tapeCount = 0;
     public int tapeCount
