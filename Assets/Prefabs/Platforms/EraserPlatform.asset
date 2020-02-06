@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccae2e70ca0fe454ca79591458b41687, type: 3}
+  m_Name: EraserPlatform
+  m_EditorClassIdentifier: 
+  fixedSprite: {fileID: 21300000, guid: c73aff5515e07634b9a6be03c75caa01, type: 3}
+  rippedSprite: {fileID: 21300000, guid: 725fa8458d20a3743a45e90294704bb5, type: 3}
+  offset: {x: 0, y: 0}
+  rippedOffset: {x: 0, y: 0.3}
+  spriteScale: 2.1
+  colliderScale: 1

@@ -22,9 +22,9 @@ public class Door : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (collision.gameObject.GetComponent<Player>().hasKey)
+            if (collision.gameObject.GetComponent<OldPlayer>().hasKey)
             {
-                collision.gameObject.GetComponent<Player>().DoWin(nextLevel);
+                collision.gameObject.GetComponent<OldPlayer>().DoWin(nextLevel);
             }
         }
     }

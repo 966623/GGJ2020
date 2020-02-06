@@ -34,8 +34,8 @@ public class Key : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             gotten = true;
-            collision.gameObject.GetComponent<Player>().hasKey = true;
-            collision.gameObject.GetComponent<Player>().tapeDisplay.GotKey();
+            collision.gameObject.GetComponent<OldPlayer>().hasKey = true;
+            collision.gameObject.GetComponent<OldPlayer>().tapeDisplay.GotKey();
             audioSource.Play();
             GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<BoxCollider2D>().enabled = false;

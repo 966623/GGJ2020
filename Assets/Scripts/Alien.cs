@@ -44,17 +44,17 @@ public class Alien : MonoBehaviour
         {
 
             audioSource.Play();
-            if (collision.gameObject.GetComponent<Player>().transform.position.x < transform.position.x)
+            if (collision.gameObject.GetComponent<OldPlayer>().transform.position.x < transform.position.x)
             {
-                collision.gameObject.GetComponent<Player>().body.gravityScale = 1;
-                collision.gameObject.GetComponent<Player>().body.AddForce(new Vector2(-50, 0));
+                collision.gameObject.GetComponent<OldPlayer>().body.gravityScale = 1;
+                collision.gameObject.GetComponent<OldPlayer>().body.AddForce(new Vector2(-50, 0));
             }
             else
             {
-                collision.gameObject.GetComponent<Player>().body.gravityScale = 1;
-                collision.gameObject.GetComponent<Player>().body.AddForce(new Vector2(50, 0));
+                collision.gameObject.GetComponent<OldPlayer>().body.gravityScale = 1;
+                collision.gameObject.GetComponent<OldPlayer>().body.AddForce(new Vector2(50, 0));
             }
-            collision.gameObject.GetComponent<Player>().TakeDamage();
+            collision.gameObject.GetComponent<OldPlayer>().TakeDamage();
         }
     }
 }

@@ -47,7 +47,7 @@ public class Hazard : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<Player>().TakeDamage();
+            collision.gameObject.GetComponent<OldPlayer>().TakeDamage();
             Activate();
         }
     }

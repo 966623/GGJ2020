@@ -17,9 +17,9 @@ TagManager:
   - 
   - 
   - Walls
-  - Platform
-  - 
-  - 
+  - PlatformPhysics
+  - PlatformInteract
+  - Player
   - 
   - 
   - 
@@ -43,4 +43,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2231424707
+    locked: 0
+  - name: Platforms
+    uniqueID: 8362217
+    locked: 0
+  - name: Items
+    uniqueID: 1122435223
+    locked: 0
+  - name: Player
+    uniqueID: 158633885
     locked: 0
