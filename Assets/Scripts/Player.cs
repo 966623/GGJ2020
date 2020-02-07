@@ -5,17 +5,28 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
+    public enum State
+    {
+        MOVING,
+        TAPING,
+        DAMAGE,
+        DEAD,
+        WIN
+    }
+
+    public State currentState = State.MOVING;
+    bool invincible = false;
     Controls controls;
     Controls.GameplayActions gameplay => controls.Gameplay;
     Rigidbody2D body;
-    new BoxCollider2D collider;
+    new PolygonCollider2D collider;
+    public Vector2 colliderSize = new Vector2(1, 1);
     new SpriteRenderer renderer;
     Animator animator;
     public float maxSpeed = 10f;
     public float jumpVelocity = 10f;
     public LayerMask groundLayers;
     public LayerMask platformLayer;
-    bool canMove = true;
 
     public List<int> initialTapeCount = new List<int>();
 
@@ -123,7 +134,7 @@ public class Player : MonoBehaviour
         controls = new Controls();
         controls.Enable();
         body = GetComponent<Rigidbody2D>();
-        collider = GetComponent<BoxCollider2D>();
+        collider = GetComponent<PolygonCollider2D>();
         renderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         gameplay.Jump.performed += Jump;
@@ -150,7 +161,7 @@ public class Player : MonoBehaviour
 
     void TryApplyUpgrade(Platform.Effect effect)
     {
-        if (!canMove || !grounded || tapeInventory[(int)effect] <= 0)
+        if (currentState != State.MOVING || !grounded || tapeInventory[(int)effect] <= 0)
         {
             return;
         }
@@ -170,18 +181,22 @@ public class Player : MonoBehaviour
 
     IEnumerator UpgradePlatform(Platform platform, Platform.Effect effect)
     {
-        canMove = false;
+        currentState = State.TAPING;
         hInput = 0;
         animator?.SetTrigger("Upgrade");
         yield return new WaitForSeconds(0.5f);
-        RemoveTape(effect);
-        platform.currentEffect = effect;
-        canMove = true;
+
+        if (currentState == State.TAPING)
+        {
+            RemoveTape(effect);
+            platform.currentEffect = effect;
+            currentState = State.MOVING;
+        }
     }
 
     private void TryApplyTape(InputAction.CallbackContext obj)
     {
-        if (!canMove || !grounded || tapeInventory[(int)Platform.Effect.NONE] <= 0)
+        if (currentState != State.MOVING || !grounded || tapeInventory[(int)Platform.Effect.NONE] <= 0)
         {
             return;
         }
@@ -201,18 +216,21 @@ public class Player : MonoBehaviour
 
     IEnumerator FixPlatform(Platform platform)
     {
-        canMove = false;
+        currentState = State.TAPING;
         hInput = 0;
         animator?.SetTrigger("Upgrade");
         yield return new WaitForSeconds(0.5f);
-        RemoveTape(Platform.Effect.NONE);
-        platform.isFixed = true;
-        canMove = true;
+        if (currentState == State.TAPING)
+        {
+            RemoveTape(Platform.Effect.NONE);
+            platform.isFixed = true;
+            currentState = State.MOVING;
+        }
     }
 
     private void TryDowngrade(InputAction.CallbackContext obj)
     {
-        if (!canMove || !grounded)
+        if (currentState != State.MOVING || !grounded)
         {
             return;
         }
@@ -232,36 +250,39 @@ public class Player : MonoBehaviour
 
     IEnumerator DowngradePlatform(Platform platform)
     {
-        canMove = false;
+        currentState = State.TAPING;
         hInput = 0;
         animator?.SetTrigger("Downgrade");
         yield return new WaitForSeconds(0.5f);
 
-        switch (platform.currentEffect)
+        if (currentState == State.TAPING)
         {
-            case Platform.Effect.NONE:
-                AddTape(platform.currentEffect);
-                platform.isFixed = false;
-                break;
-            case Platform.Effect.DASH:
-                AddTape(platform.currentEffect);
-                platform.currentEffect = Platform.Effect.NONE;
-                break;
-            case Platform.Effect.BOUNCE:
-                AddTape(platform.currentEffect);
-                platform.currentEffect = Platform.Effect.NONE;
-                break;
-            default:
-                break;
-        }
+            switch (platform.currentEffect)
+            {
+                case Platform.Effect.NONE:
+                    AddTape(platform.currentEffect);
+                    platform.isFixed = false;
+                    break;
+                case Platform.Effect.DASH:
+                    AddTape(platform.currentEffect);
+                    platform.currentEffect = Platform.Effect.NONE;
+                    break;
+                case Platform.Effect.BOUNCE:
+                    AddTape(platform.currentEffect);
+                    platform.currentEffect = Platform.Effect.NONE;
+                    break;
+                default:
+                    break;
+            }
 
-        canMove = true;
+            currentState = State.MOVING;
+        }
     }
 
     public delegate bool PlatformConditionFunc(Platform platform);
     private Platform GetInteractablePlatform(PlatformConditionFunc condition)
     {
-        RaycastHit2D[] hits = Physics2D.BoxCastAll(body.position + Facing * new Vector2(collider.size.x, 0), new Vector2(collider.size.x, collider.size.y * 0.5f), 0, Vector2.down, collider.size.y, platformLayer);
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(body.position + Facing * new Vector2(colliderSize.x, 0), new Vector2(colliderSize.x, colliderSize.y * 0.5f), 0, Vector2.down, colliderSize.y, platformLayer);
         foreach (var hit in hits)
         {
             Platform hitPlatform = hit.collider.gameObject.GetComponent<Platform>();
@@ -285,7 +306,7 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(GameObject damageSource)
     {
-        if (!canMove)
+        if (currentState == State.DAMAGE || currentState == State.DEAD || currentState == State.WIN || invincible)
         {
             return;
         }
@@ -295,12 +316,22 @@ public class Player : MonoBehaviour
 
     IEnumerator DamageCoroutine(Transform damageSourceTransform)
     {
-        canMove = false;
+        currentState = State.DAMAGE;
         hVelocity = 0;
         animator?.SetTrigger("Flinch");
         body.AddForce(new Vector2(2f * Mathf.Sign(transform.position.x - damageSourceTransform.position.x), 2f), ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.5f);
+        currentState = State.MOVING;
+        StartCoroutine(MakeInvincible());
+    }
+
+    IEnumerator MakeInvincible()
+    {
+        invincible = true;
+        renderer.color = new Color(1, 1, 1, 0.5f);
         yield return new WaitForSeconds(1f);
-        canMove = true;
+        invincible = false;
+        renderer.color = new Color(1, 1, 1, 1f);
     }
 
     private void OnEnable()
@@ -317,7 +348,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!canMove)
+        if (currentState != State.MOVING)
         {
             return;
         }
@@ -331,7 +362,7 @@ public class Player : MonoBehaviour
         // Ground check
         if (body.velocity.y <= 0)
         {
-            RaycastHit2D hit = Physics2D.BoxCast(body.position, collider.size, 0, Vector2.down, .02f, groundLayers);
+            RaycastHit2D hit = Physics2D.BoxCast(body.position, colliderSize, 0, Vector2.down, .02f, groundLayers);
             if (hit.collider != null)
             {
                 grounded = true;
@@ -346,8 +377,21 @@ public class Player : MonoBehaviour
             grounded = false;
         }
 
+        if (currentState == State.DAMAGE)
+        {
+            if (grounded)
+            {
+                body.velocity = Vector2.zero;
+            }
+        }
 
-        if (canMove)
+        if (currentState == State.TAPING)
+        {
+            body.velocity = Vector2.zero;
+
+        }
+
+        else if (currentState == State.MOVING)
         {
             float targetVelocity = maxSpeed * hInput;
             float currentVelocity = body.velocity.x;
