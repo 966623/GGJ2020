@@ -11,51 +11,65 @@ public class Platform : MonoBehaviour
         BOUNCE
     }
 
-    public PlatformSkin skin;
+
     public new SpriteRenderer renderer;
+    public SpriteRenderer rippedRenderer;
     public BoxCollider2D physicsCollider;
-    public BoxCollider2D interactionCollider;
+    BoxCollider2D interactionCollider;
     public bool IsFixedInitial = false;
     public Effect InitialEffect = Effect.NONE;
 
-    public Effect currentEffect = Effect.NONE;
+    public SpriteRenderer tapeRenderer;
+    public SpriteRenderer upgradeRenderer;
+    public List<Sprite> upgradeSprites = new List<Sprite>();
+
+    Effect _currentEffect = Effect.NONE;
+    public Effect currentEffect
+    {
+        get => _currentEffect;
+        set
+        {
+            _currentEffect = value;
+            upgradeRenderer.sprite = upgradeSprites[(int)value];
+        }
+    }
+
     bool _isFixed = false;
     public bool isFixed
     {
-        get
-        {
-            return _isFixed;
-        }
+        get => _isFixed;
         set
         {
             _isFixed = value;
 
             if (_isFixed)
             {
-                renderer.sprite = skin.fixedSprite;
-                renderer.transform.localPosition = skin.offset;
+                tapeRenderer.enabled = true;
+                renderer.enabled = true;
+                rippedRenderer.enabled = false;
                 physicsCollider.enabled = true;
             }
             else
             {
-                renderer.sprite = skin.rippedSprite;
-                renderer.transform.localPosition = skin.rippedOffset;
+                tapeRenderer.enabled = false;
+                renderer.enabled = false;
+                rippedRenderer.enabled = true;
                 physicsCollider.enabled = false;
             }
         }
     }
+
     private void Awake()
     {
-        renderer.sprite = skin.fixedSprite;
-        renderer.transform.localPosition = skin.offset;
-        renderer.transform.localScale = new Vector3(skin.spriteScale, skin.spriteScale, 1);
-        physicsCollider.size = new Vector2(2, skin.colliderScale);
-        physicsCollider.offset = new Vector2(0, 1 - skin.colliderScale / 2);
-        interactionCollider.size = new Vector2(2, skin.colliderScale);
-        interactionCollider.offset = new Vector2(0, 1 - skin.colliderScale / 2);
+        interactionCollider = GetComponent<BoxCollider2D>();
+
+        physicsCollider.size = interactionCollider.size;
+        physicsCollider.offset = interactionCollider.offset;
 
         isFixed = IsFixedInitial;
+        currentEffect = InitialEffect;
     }
+
     // Start is called before the first frame update
     void Start()
     {

@@ -17,11 +17,11 @@ public class Player : MonoBehaviour
     public LayerMask platformLayer;
     bool canMove = true;
 
+    public List<int> initialTapeCount = new List<int>();
 
-
-    public int initialTapeCount = 0;
-    public int initialBounceTapeCount = 0;
-    public int initialDashTapeCount = 0;
+    public delegate void TapeCountHandler(Platform.Effect effect);
+    public event TapeCountHandler TapeCountIncrement;
+    public event TapeCountHandler TapeCountDecrement;
 
     int[] tapeInventory = new int[System.Enum.GetNames(typeof(Platform.Effect)).Length];
 
@@ -33,55 +33,16 @@ public class Player : MonoBehaviour
     public void AddTape(Platform.Effect effect = Platform.Effect.NONE)
     {
         tapeInventory[(int)effect]++;
+        TapeCountIncrement(effect);
     }
 
     public void RemoveTape(Platform.Effect effect = Platform.Effect.NONE)
     {
         tapeInventory[(int)effect]--;
+        TapeCountDecrement(effect);
     }
 
-    public UnityEvent TapeCountChanged;
-    int _tapeCount = 0;
-    public int tapeCount
-    {
-        get
-        {
-            return _tapeCount;
-        }
-        set
-        {
-            _tapeCount = value;
-            TapeCountChanged.Invoke();
-        }
-    }
 
-    int _bounceTapeCount = 0;
-    public int bounceTapeCount
-    {
-        get
-        {
-            return _bounceTapeCount;
-        }
-        set
-        {
-            _bounceTapeCount = value;
-            TapeCountChanged.Invoke();
-        }
-    }
-
-    int _dashTapeCount = 0;
-    public int dashTapeCount
-    {
-        get
-        {
-            return _dashTapeCount;
-        }
-        set
-        {
-            _dashTapeCount = value;
-            TapeCountChanged.Invoke();
-        }
-    }
 
     float _hInput = 0;
     float hInput
@@ -171,9 +132,10 @@ public class Player : MonoBehaviour
         gameplay.BounceTape.performed += ApplyBounce;
         gameplay.DashTape.performed += ApplyDash;
 
-        tapeCount = initialTapeCount;
-        bounceTapeCount = initialBounceTapeCount;
-        dashTapeCount = initialDashTapeCount;
+        foreach (Platform.Effect effect in (Platform.Effect[])Platform.Effect.GetValues(typeof(Platform.Effect)))
+        {
+            tapeInventory[(int)effect] = initialTapeCount[(int)effect];
+        }
     }
 
     private void ApplyDash(InputAction.CallbackContext obj)
@@ -188,7 +150,7 @@ public class Player : MonoBehaviour
 
     void TryApplyUpgrade(Platform.Effect effect)
     {
-        if (!canMove || !grounded || tapeCount <= 0)
+        if (!canMove || !grounded || tapeInventory[(int)effect] <= 0)
         {
             return;
         }
@@ -203,7 +165,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        StartCoroutine(FixPlatform(hitPlatform));
+        StartCoroutine(UpgradePlatform(hitPlatform, effect));
     }
 
     IEnumerator UpgradePlatform(Platform platform, Platform.Effect effect)
@@ -212,14 +174,14 @@ public class Player : MonoBehaviour
         hInput = 0;
         animator?.SetTrigger("Upgrade");
         yield return new WaitForSeconds(0.5f);
-        tapeCount--;
+        RemoveTape(effect);
         platform.currentEffect = effect;
         canMove = true;
     }
 
     private void TryApplyTape(InputAction.CallbackContext obj)
     {
-        if (!canMove || !grounded || tapeCount <= 0)
+        if (!canMove || !grounded || tapeInventory[(int)Platform.Effect.NONE] <= 0)
         {
             return;
         }
@@ -243,7 +205,7 @@ public class Player : MonoBehaviour
         hInput = 0;
         animator?.SetTrigger("Upgrade");
         yield return new WaitForSeconds(0.5f);
-        tapeCount--;
+        RemoveTape(Platform.Effect.NONE);
         platform.isFixed = true;
         canMove = true;
     }
@@ -278,12 +240,16 @@ public class Player : MonoBehaviour
         switch (platform.currentEffect)
         {
             case Platform.Effect.NONE:
-                tapeCount++;
+                AddTape(platform.currentEffect);
                 platform.isFixed = false;
                 break;
             case Platform.Effect.DASH:
+                AddTape(platform.currentEffect);
+                platform.currentEffect = Platform.Effect.NONE;
                 break;
             case Platform.Effect.BOUNCE:
+                AddTape(platform.currentEffect);
+                platform.currentEffect = Platform.Effect.NONE;
                 break;
             default:
                 break;
@@ -315,6 +281,26 @@ public class Player : MonoBehaviour
             body.AddForce(new Vector2(0, jumpVelocity), ForceMode2D.Impulse);
         }
 
+    }
+
+    public void TakeDamage(GameObject damageSource)
+    {
+        if (!canMove)
+        {
+            return;
+        }
+
+        StartCoroutine(DamageCoroutine(damageSource.transform));
+    }
+
+    IEnumerator DamageCoroutine(Transform damageSourceTransform)
+    {
+        canMove = false;
+        hVelocity = 0;
+        animator?.SetTrigger("Flinch");
+        body.AddForce(new Vector2(2f * Mathf.Sign(transform.position.x - damageSourceTransform.position.x), 2f), ForceMode2D.Impulse);
+        yield return new WaitForSeconds(1f);
+        canMove = true;
     }
 
     private void OnEnable()
@@ -360,10 +346,14 @@ public class Player : MonoBehaviour
             grounded = false;
         }
 
-        float targetVelocity = maxSpeed * hInput;
-        float currentVelocity = body.velocity.x;
-        float velocityDifference = targetVelocity - currentVelocity;
-        body.AddForce(new Vector2(velocityDifference, 0), ForceMode2D.Impulse);
+
+        if (canMove)
+        {
+            float targetVelocity = maxSpeed * hInput;
+            float currentVelocity = body.velocity.x;
+            float velocityDifference = targetVelocity - currentVelocity;
+            body.AddForce(new Vector2(velocityDifference, 0), ForceMode2D.Impulse);
+        }
 
 
     }

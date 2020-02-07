@@ -105,6 +105,7 @@ MonoBehaviour:
   platformLayer:
     serializedVersion: 2
     m_Bits: 1536
+  initialTapeCount: 000000000000000000000000
 --- !u!50 &9142829822466830361
 Rigidbody2D:
   serializedVersion: 4
