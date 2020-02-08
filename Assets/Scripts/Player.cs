@@ -22,15 +22,58 @@ public class Player : StateMachine
     public float maxSpeed = 10f;
     public float jumpVelocity = 10f;
     public LayerMask platformLayer;
+    public LayerMask platformPhysicsLayer;
+
+    [HideInInspector]
+    public float airTime = 0;
+
+    [HideInInspector]
+    float _speedModifier = 1;
+    public float SpeedModifier
+    {
+        get => _speedModifier;
+        set
+        {
+            _speedModifier = value;
+        }
+
+    }
+
+    public event StandardEvent OnKeyGet;
+    bool _hasKey;
+    public bool HasKey
+    {
+        get => _hasKey;
+        set
+        {
+            _hasKey = value;
+            if (_hasKey)
+            {
+                OnKeyGet?.Invoke();
+            }
+        }
+    }
+
+    int _health = 3;
+    public int Health
+    {
+        get => _health;
+        set
+        {
+            _health = value;
+        }
+    }
 
     #region States
     public PlayerMoveState moveState;
     public PlayerTapingState tapingState;
     public PlayerUntapingState untapingState;
     public PlayerDamageState damageState;
+    public PlayerDeadState deadState;
 
     public PlayerGroundTransition groundTransition;
     public PlayerDamageTransition damageTransition;
+    public PlayerDeadTransition deadTransition;
     #endregion States
 
     #region Tape
@@ -40,7 +83,9 @@ public class Player : StateMachine
     public event TapeCountHandler TapeCountIncrement;
     public event TapeCountHandler TapeCountDecrement;
 
+    [HideInInspector]
     public Platform.Effect tapeQueue;
+    [HideInInspector]
     public Transform lastHazardHit;
 
     public int[] tapeInventory = new int[System.Enum.GetNames(typeof(Platform.Effect)).Length];
@@ -92,8 +137,9 @@ public class Player : StateMachine
         renderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         movement = GetComponent<MovementController>();
-        movement.OnGrounded += () => { animator?.SetBool("Grounded", true); };
-        movement.OnLeaveGrounded += () => { animator?.SetBool("Grounded", false); };
+        movement.OnGrounded += (g) => { animator?.SetBool("Grounded", true); };
+        movement.OnGrounded += (g) => { airTime = 0; };
+        movement.OnLeaveGrounded += (g) => { animator?.SetBool("Grounded", false); };
 
         // init tape inventory
         foreach (Platform.Effect effect in (Platform.Effect[])Platform.Effect.GetValues(typeof(Platform.Effect)))
@@ -106,10 +152,12 @@ public class Player : StateMachine
         tapingState = new PlayerTapingState(this);
         untapingState = new PlayerUntapingState(this);
         damageState = new PlayerDamageState(this);
+        deadState = new PlayerDeadState(this);
 
         //init transitions
         groundTransition = new PlayerGroundTransition(this);
         damageTransition = new PlayerDamageTransition(this);
+        deadTransition = new PlayerDeadTransition(this);
 
         // init state map
         stateMap.Add(damageState, new List<TransitionStatePair>()
@@ -138,12 +186,17 @@ public class Player : StateMachine
             }
         );
 
+        globalTransitions.Add(new TransitionStatePair(deadTransition, deadState));
+
         SetState(moveState);
     }
 
     public void TakeDamage(GameObject damageSource)
     {
-        if (invincible) return;
+        if (invincible)
+        {
+            return;
+        }
 
         lastHazardHit = damageSource.transform;
     }
@@ -153,15 +206,20 @@ public class Player : StateMachine
         gameplay.Enable();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     public override void OnUpdate(float deltaTime)
     {
         animator.SetFloat("VerticalSpeed", movement.Velocity.y);
+    }
+
+    private void FixedUpdate()
+    {
+        if (movement.grounded)
+        {
+        }
+        else
+        {
+            airTime += Time.deltaTime;
+        }
     }
 
     #region Movement
@@ -213,7 +271,7 @@ public class Player : StateMachine
     public void Move(float scale)
     {
         hInput = scale;
-        float targetVelocity = maxSpeed * hInput;
+        float targetVelocity = maxSpeed * hInput * SpeedModifier;
         float currentVelocity = movement.Velocity.x;
         float velocityDifference = targetVelocity - currentVelocity;
         movement.ImpulseMove(new Vector2(velocityDifference, 0));

@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 public class PlayerDamageState : State
 {
     Player player;
-    public float damageTimer = 0;
     public PlayerDamageState(Player owner) : base(owner.gameObject)
     {
         player = owner;
@@ -16,12 +15,14 @@ public class PlayerDamageState : State
     {
         player.movement.Velocity = new Vector2(0, 0);
         player.StartCoroutine(DamageCoroutine(player.lastHazardHit));
-        damageTimer = 0;
     }
 
     public override void OnExit()
     {
+        player.StopAllCoroutines();
         player.lastHazardHit = null;
+        player.invincible = false;
+        player.renderer.color = new Color(1, 1, 1, 1f);
     }
 
     IEnumerator MakeInvincible()
@@ -35,6 +36,7 @@ public class PlayerDamageState : State
 
     IEnumerator DamageCoroutine(Transform damageSourceTransform)
     {
+        player.Health--;
         player.animator?.SetTrigger("Flinch");
         player.movement.ImpulseMove(new Vector2(4f * Mathf.Sign(player.movement.Position.x - damageSourceTransform.position.x), 4f));
         player.StartCoroutine(MakeInvincible());
@@ -44,7 +46,6 @@ public class PlayerDamageState : State
 
     public override void OnUpdate(float deltaTime)
     {
-        damageTimer += deltaTime;
     }
 
 }

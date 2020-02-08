@@ -16,6 +16,7 @@ public class StateMachine : MonoBehaviour
     }
 
     protected Dictionary<State, List<TransitionStatePair>> stateMap = new Dictionary<State, List<TransitionStatePair>>();
+    protected List<TransitionStatePair> globalTransitions = new List<TransitionStatePair>();
 
 
     State currentState;
@@ -33,13 +34,22 @@ public class StateMachine : MonoBehaviour
         List<TransitionStatePair> transitions;
         if (stateMap.ContainsKey(currentState) && (transitions = stateMap[currentState]) != null)
         {
-            foreach(var pair in transitions)
+            foreach (var pair in transitions)
             {
                 if (pair.transition.ToTransition())
                 {
                     SetState(pair.state);
                     break;
                 }
+            }
+        }
+
+        foreach (var pair in globalTransitions)
+        {
+            if (pair.transition.ToTransition())
+            {
+                SetState(pair.state);
+                break;
             }
         }
 

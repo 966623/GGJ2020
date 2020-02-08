@@ -27,7 +27,7 @@ public class Hazard : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (playerLayer == (playerLayer | (1 << collision.gameObject.layer)))
+        if (collision.gameObject.GetComponent<Player>() != null)
         {
             collision.gameObject.GetComponent<Player>().TakeDamage(gameObject);
             Activate();

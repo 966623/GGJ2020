@@ -99,18 +99,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9679bed715a8542951a9eb324164d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialState: {fileID: 11400000, guid: 7141d5e9163aaa146be5f7e504f47c78, type: 2}
+  invincible: 0
   movement: {fileID: 5148349020404568293}
   animator: {fileID: 9142829822466830362}
+  renderer: {fileID: 0}
   maxSpeed: 4
   jumpVelocity: 7
-  groundLayers:
-    serializedVersion: 2
-    m_Bits: 768
   platformLayer:
     serializedVersion: 2
     m_Bits: 1536
+  platformPhysicsLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  airTime: 0
   initialTapeCount: 000000000000000000000000
+  tapeQueue: 0
+  lastHazardHit: {fileID: 0}
+  tapeInventory: 000000000000000000000000
 --- !u!114 &5148349020404568293
 MonoBehaviour:
   m_ObjectHideFlags: 0

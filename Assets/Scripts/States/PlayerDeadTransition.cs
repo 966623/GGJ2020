@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerGroundTransition : StateTransition
+public class PlayerDeadTransition : StateTransition
 {
 
     Player player;
-    public PlayerGroundTransition(Player owner): base(owner.gameObject)
+    public PlayerDeadTransition(Player owner): base(owner.gameObject)
     {
         player = owner;
     }
 
     public override bool ToTransition()
     {
-        return player.movement.grounded && player.airTime > 0.1f;
+        return player.Health <= 0;
     }
 
 }

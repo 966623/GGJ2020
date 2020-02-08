@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+
 public class MovementController : MonoBehaviour
 {
     Rigidbody2D body;
     public Vector2 colliderSize;
     public LayerMask groundLayers;
 
-  
-    public delegate void StandardEvent();
-    public event StandardEvent OnGrounded;
-    public event StandardEvent OnLeaveGrounded;
+
+    public delegate void GroundEvent(GameObject ground);
+    public event GroundEvent OnGrounded;
+    public event GroundEvent OnLeaveGrounded;
 
     bool _grounded = false;
     public bool grounded
@@ -24,8 +25,8 @@ public class MovementController : MonoBehaviour
         set
         {
             _grounded = value;
-            if (_grounded) OnGrounded?.Invoke();
-            else OnLeaveGrounded?.Invoke();
+            if (_grounded) OnGrounded?.Invoke(gameObject);
+            else OnLeaveGrounded?.Invoke(gameObject);
         }
     }
 

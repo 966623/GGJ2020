@@ -5,6 +5,7 @@ using UnityEngine;
 public class Key : MonoBehaviour
 {
     AudioSource audioSource;
+    public Animator animator;
     bool gotten = false;
 
     private void Awake()
@@ -29,15 +30,18 @@ public class Key : MonoBehaviour
         {
             return;
         }
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.GetComponent<Player>() != null)
         {
             gotten = true;
-            collision.gameObject.GetComponent<OldPlayer>().hasKey = true;
-            collision.gameObject.GetComponent<OldPlayer>().tapeDisplay.GotKey();
+            animator.SetTrigger("Get");
+            collision.gameObject.GetComponent<Player>().HasKey = true;
             audioSource.Play();
-            GetComponent<SpriteRenderer>().enabled = false;
-            GetComponent<BoxCollider2D>().enabled = false;
-            Destroy(transform.GetChild(0).gameObject);
         }
+    }
+
+    IEnumerator DestroySelf()
+    {
+        yield return new WaitForSeconds(0.75f);
+        Destroy(gameObject);
     }
 }

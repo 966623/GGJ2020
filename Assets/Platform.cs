@@ -65,9 +65,31 @@ public class Platform : MonoBehaviour
 
         physicsCollider.size = interactionCollider.size;
         physicsCollider.offset = interactionCollider.offset;
-
+        physicsCollider.GetComponent<PlatformPhysics>().OnCollision += Platform_OnCollision;
         isFixed = IsFixedInitial;
         currentEffect = InitialEffect;
+    }
+
+    private void Platform_OnCollision(Collision2D collision)
+    {
+        Player player = collision.gameObject.GetComponent<Player>();
+        if (player != null && player.movement.Position.y >= transform.position.y + 1f)
+        {
+            switch (currentEffect)
+            {
+                case Effect.NONE:
+                    break;
+                case Effect.DASH:
+                    player.SpeedModifier = 2;
+                    break;
+                case Effect.BOUNCE:
+                    player.movement.ImpulseMove(new Vector2(0, player.jumpVelocity * 2f));
+
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     // Start is called before the first frame update
@@ -79,7 +101,6 @@ public class Platform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 }
 
