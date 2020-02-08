@@ -5,8 +5,6 @@ using UnityEngine;
 public class Key : MonoBehaviour
 {
     AudioSource audioSource;
-
-
     bool gotten = false;
 
     private void Awake()

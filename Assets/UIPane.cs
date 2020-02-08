@@ -20,10 +20,10 @@ public class UIPane : MonoBehaviour
     {
         foreach (Platform.Effect effect in (Platform.Effect[])Platform.Effect.GetValues(typeof(Platform.Effect)))
         {
-            for(int i = 0; i < player.GetTapeCount(effect); i++)
-            {
-                Instantiate(tapePrefabs[(int)effect], tapePanels[(int)effect]);
-            }
+            //for(int i = 0; i < player.GetTapeCount(effect); i++)
+            //{
+            //    Instantiate(tapePrefabs[(int)effect], tapePanels[(int)effect]);
+            //}
         }
     }
 

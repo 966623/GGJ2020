@@ -445,7 +445,7 @@ PrefabInstance:
     - target: {fileID: 446600089225266132, guid: 25320d858e0021c4d86d6dc19574ace8,
         type: 3}
       propertyPath: InitialEffect
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25320d858e0021c4d86d6dc19574ace8, type: 3}
