@@ -21,14 +21,9 @@ public class PlayerMoveState : State
         player.gameplay.BounceTape.performed += StartApplyTape;
         player.gameplay.DashTape.performed += StartApplyTape;
         player.gameplay.Downgrade.performed += StartDowngrade;
-
+        player.OnCollision += Player_OnCollision;
     }
 
-    private void StartDowngrade(InputAction.CallbackContext obj)
-    {
-        if (!player.movement.grounded) return;
-        player.SetState(player.untapingState);
-    }
 
     public override void OnExit()
     {
@@ -37,11 +32,51 @@ public class PlayerMoveState : State
         player.gameplay.BounceTape.performed -= StartApplyTape;
         player.gameplay.DashTape.performed -= StartApplyTape;
         player.gameplay.Downgrade.performed -= StartDowngrade;
+
+        player.SpeedModifier = 1;
     }
+
+    private void Player_OnCollision(Collision2D collision)
+    {
+        PlatformPhysics pp = collision.gameObject.GetComponent<PlatformPhysics>();
+        if (pp != null)
+        {
+            //if (pp.mainPlatform.currentEffect != Platform.Effect.DASH)
+            //{
+            //    player.SpeedModifier = 1;
+            //}
+            //if (pp.mainPlatform.currentEffect != Platform.Effect.BOUNCE)
+            //{
+            //    player.jumpModifier = 1;
+            //}
+        }
+        else
+        {
+
+            player.SpeedModifier = 1;
+            player.jumpModifier = 1;
+        }
+
+
+    }
+
+    private void StartDowngrade(InputAction.CallbackContext obj)
+    {
+        if (!player.movement.grounded)
+        {
+            return;
+        }
+
+        player.SetState(player.untapingState);
+    }
+
 
     void StartApplyTape(InputAction.CallbackContext obj)
     {
-        if (!player.movement.grounded) return;
+        if (!player.movement.grounded)
+        {
+            return;
+        }
 
         if (obj.action == player.gameplay.ApplyTape)
         {
@@ -64,5 +99,4 @@ public class PlayerMoveState : State
         float scale = player.gameplay.Move.ReadValue<Vector2>().x;
         player.Move(scale);
     }
-
 }

@@ -14,6 +14,7 @@ public class PlayerDeadState : State
     }
     public override void OnEnter()
     {
+        player.renderer.color = new Color(1, 1, 1, 1f);
         player.movement.Velocity = new Vector2(0, 0);
         player.StartCoroutine(DeathCoroutine());
     }
@@ -25,6 +26,7 @@ public class PlayerDeadState : State
   
     IEnumerator DeathCoroutine()
     {
+        player.dieAudio.PlayRandomClip(player.audioSource);
         player.animator?.SetTrigger("Dead");
         yield return new WaitForSeconds(1f);
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);

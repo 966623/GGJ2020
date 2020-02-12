@@ -41,6 +41,8 @@ public class PlayerUntapingState : State
 
     IEnumerator DowngradePlatform(Platform platform)
     {
+        player.untapeAudio.PlayRandomClip(player.audioSource);
+
         player.animator?.SetTrigger("Downgrade");
         yield return new WaitForSeconds(0.5f);
 

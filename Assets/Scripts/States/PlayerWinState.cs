@@ -5,20 +5,30 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 //[CreateAssetMenu(fileName = "PlayerMoveState", menuName = "States/Player/Move", order = 1)]
-public class PlayerDashState : State
+public class PlayerWinState : State
 {
     Player player;
-    public PlayerDashState(Player owner) : base(owner.gameObject)
+    public PlayerWinState(Player owner) : base(owner.gameObject)
     {
         player = owner;
     }
     public override void OnEnter()
     {
-        player.movement.ImpulseMove(new Vector2(player.maxSpeed * 2 * player.Facing, player.jumpVelocity * 0.5f));
+        player.StopAllCoroutines();
+        player.invincible = true;
+        player.movement.Velocity = new Vector2(0, 0);
+        player.StartCoroutine(WinCoroutine());
     }
 
     public override void OnExit()
     {
+    }
+
+  
+    IEnumerator WinCoroutine()
+    {
+        player.animator?.SetTrigger("Win");
+        yield return new WaitForSeconds(1f);
     }
 
     public override void OnUpdate(float deltaTime)

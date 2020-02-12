@@ -14,6 +14,7 @@ public class Platform : MonoBehaviour
 
     public new SpriteRenderer renderer;
     public SpriteRenderer rippedRenderer;
+    PlatformPhysics platformPhysics;
     public BoxCollider2D physicsCollider;
     BoxCollider2D interactionCollider;
     public bool IsFixedInitial = false;
@@ -23,6 +24,8 @@ public class Platform : MonoBehaviour
     public SpriteRenderer upgradeRenderer;
     public List<Sprite> upgradeSprites = new List<Sprite>();
 
+    public Player collidingPlayer;
+
     Effect _currentEffect = Effect.NONE;
     public Effect currentEffect
     {
@@ -31,6 +34,10 @@ public class Platform : MonoBehaviour
         {
             _currentEffect = value;
             upgradeRenderer.sprite = upgradeSprites[(int)value];
+            if (collidingPlayer != null)
+            {
+                ApplyPlayerEffect(collidingPlayer);
+            }
         }
     }
 
@@ -65,30 +72,64 @@ public class Platform : MonoBehaviour
 
         physicsCollider.size = interactionCollider.size;
         physicsCollider.offset = interactionCollider.offset;
-        physicsCollider.GetComponent<PlatformPhysics>().OnCollision += Platform_OnCollision;
+        platformPhysics = physicsCollider.GetComponent<PlatformPhysics>();
+        platformPhysics.OnCollisionEnter += PlatformPhysics_OnCollisionEnter;
+        platformPhysics.OnCollisionStay += PlatformPhysics_OnCollisionStay;
         isFixed = IsFixedInitial;
         currentEffect = InitialEffect;
     }
 
-    private void Platform_OnCollision(Collision2D collision)
+    private void PlatformPhysics_OnCollisionStay(Collision2D collision)
     {
-        Player player = collision.gameObject.GetComponent<Player>();
-        if (player != null && player.movement.Position.y >= transform.position.y + 1f)
+        if (collision.gameObject.GetComponent<Player>() != null)
+        {
+            collidingPlayer = collision.gameObject.GetComponent<Player>();
+        }
+        else
+        {
+            collidingPlayer = null;
+        }
+    }
+
+    private void PlatformPhysics_OnCollisionEnter(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<Player>() != null)
+        {
+            ApplyPlayerEffect(collision.gameObject.GetComponent<Player>());
+        }
+    }
+
+    void ApplyPlayerEffect(Player player)
+    {
+
+        if (player.movement.Position.y >= transform.position.y + 1f)
         {
             switch (currentEffect)
             {
-                case Effect.NONE:
+                case Platform.Effect.NONE:
+                    player.SpeedModifier = 1;
                     break;
-                case Effect.DASH:
-                    player.SpeedModifier = 2;
+                case Platform.Effect.DASH:
+                    player.SpeedModifier = 3;
                     break;
-                case Effect.BOUNCE:
-                    player.movement.ImpulseMove(new Vector2(0, player.jumpVelocity * 2f));
-
+                case Platform.Effect.BOUNCE:
+                    player.jumpModifier = 2;
+                    if (player.SpeedModifier > 1 || !player.Grounded)
+                    {
+                        player.bounceAudio.PlayRandomClip(player.audioSource);
+                        player.Grounded = true;
+                        player.Jump();
+                        //player.movement.Velocity = new Vector2(player.movement.Velocity.x, 0);
+                    }
                     break;
                 default:
                     break;
             }
+        }
+        
+        else
+        {
+            player.SpeedModifier = 1;
         }
     }
 

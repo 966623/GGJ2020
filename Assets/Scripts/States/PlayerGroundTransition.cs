@@ -13,7 +13,7 @@ public class PlayerGroundTransition : StateTransition
 
     public override bool ToTransition()
     {
-        return player.movement.grounded && player.airTime > 0.1f;
+        return player.Grounded && player.airTime > 0.1f;
     }
 
 }

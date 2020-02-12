@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162f363cbceb6c9449b007b83444fcf8, type: 3}
+  m_Name: PlayerSpecialTape
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 58200be4b3b678248a8cf56c1c46b014, type: 3}
+  - {fileID: 8300000, guid: 58200be4b3b678248a8cf56c1c46b014, type: 3}
+  - {fileID: 8300000, guid: 58200be4b3b678248a8cf56c1c46b014, type: 3}
+  - {fileID: 8300000, guid: 82d60152e761ec5439a29b7c95770315, type: 3}
+  - {fileID: 8300000, guid: 82d60152e761ec5439a29b7c95770315, type: 3}
+  - {fileID: 8300000, guid: 216524aaf9b17674482cbde71547c642, type: 3}
+  - {fileID: 8300000, guid: 216524aaf9b17674482cbde71547c642, type: 3}
+  - {fileID: 8300000, guid: f26c6d68f43a62547bfad42c9deb75e3, type: 3}
+  - {fileID: 8300000, guid: c81662b1263f8cb47864d039e13bd0cd, type: 3}
+  - {fileID: 8300000, guid: c81662b1263f8cb47864d039e13bd0cd, type: 3}

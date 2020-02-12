@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class PlatformPhysics : MonoBehaviour
 {
-    public delegate void CollisionEvent(Collision2D collision);
-    public event CollisionEvent OnCollision;
+    public Platform mainPlatform;
+    public event CollisionEvent OnCollisionEnter;
+    public event CollisionEvent OnCollisionStay;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +21,11 @@ public class PlatformPhysics : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        OnCollision?.Invoke(collision);
+        OnCollisionEnter?.Invoke(collision);
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        OnCollisionStay?.Invoke(collision);
     }
 }

@@ -19,8 +19,13 @@ public class Player : StateMachine
 
     [HideInInspector]
     public new SpriteRenderer renderer;
+
+    [HideInInspector]
+    public AudioSource audioSource;
     public float maxSpeed = 10f;
     public float jumpVelocity = 10f;
+    public float maxAccel = 1f;
+    public float maxAirAccel = 1f;
     public LayerMask platformLayer;
     public LayerMask platformPhysicsLayer;
 
@@ -28,6 +33,8 @@ public class Player : StateMachine
     public float airTime = 0;
 
     [HideInInspector]
+    public float jumpModifier = 1;
+
     float _speedModifier = 1;
     public float SpeedModifier
     {
@@ -64,12 +71,29 @@ public class Player : StateMachine
         }
     }
 
+    public bool Grounded = false;
+    public bool WasGrounded = false;
+
+    #region Audio
+    public AudioLibrary jumpAudio;
+    public AudioLibrary dashAudio;
+    public AudioLibrary bounceAudio;
+    public AudioLibrary dieAudio;
+    public AudioLibrary winAudio;
+    public AudioLibrary tapeAudio;
+    public AudioLibrary untapeAudio;
+    public AudioLibrary specialTapeAudio;
+    public AudioLibrary hurtAudio;
+
+    #endregion Audio
+
     #region States
     public PlayerMoveState moveState;
     public PlayerTapingState tapingState;
     public PlayerUntapingState untapingState;
     public PlayerDamageState damageState;
     public PlayerDeadState deadState;
+    public PlayerWinState winState;
 
     public PlayerGroundTransition groundTransition;
     public PlayerDamageTransition damageTransition;
@@ -88,6 +112,7 @@ public class Player : StateMachine
     [HideInInspector]
     public Transform lastHazardHit;
 
+    [HideInInspector]
     public int[] tapeInventory = new int[System.Enum.GetNames(typeof(Platform.Effect)).Length];
 
     public int GetTapeCount(Platform.Effect effect = Platform.Effect.NONE)
@@ -134,6 +159,7 @@ public class Player : StateMachine
         controls.Enable();
 
         // init components
+        audioSource = GetComponent<AudioSource>();
         renderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         movement = GetComponent<MovementController>();
@@ -153,6 +179,7 @@ public class Player : StateMachine
         untapingState = new PlayerUntapingState(this);
         damageState = new PlayerDamageState(this);
         deadState = new PlayerDeadState(this);
+        winState = new PlayerWinState(this);
 
         //init transitions
         groundTransition = new PlayerGroundTransition(this);
@@ -209,11 +236,14 @@ public class Player : StateMachine
     public override void OnUpdate(float deltaTime)
     {
         animator.SetFloat("VerticalSpeed", movement.Velocity.y);
+        WasGrounded = Grounded;
+        Grounded = movement.grounded;
+      
     }
 
     private void FixedUpdate()
     {
-        if (movement.grounded)
+        if (Grounded)
         {
         }
         else
@@ -274,15 +304,33 @@ public class Player : StateMachine
         float targetVelocity = maxSpeed * hInput * SpeedModifier;
         float currentVelocity = movement.Velocity.x;
         float velocityDifference = targetVelocity - currentVelocity;
+        if (Grounded)
+        {
+            velocityDifference = Mathf.Min(velocityDifference, maxAccel * Time.deltaTime);
+            velocityDifference = Mathf.Max(velocityDifference, -maxAccel * Time.deltaTime);
+        }
+        else
+        {
+            velocityDifference = Mathf.Min(velocityDifference, maxAirAccel * Time.deltaTime);
+            velocityDifference = Mathf.Max(velocityDifference, -maxAirAccel * Time.deltaTime);
+        }
         movement.ImpulseMove(new Vector2(velocityDifference, 0));
     }
 
-    public void Jump(InputAction.CallbackContext obj)
+    public void Jump(InputAction.CallbackContext obj = new InputAction.CallbackContext())
     {
-        if (movement.grounded)
+        if (Grounded)
         {
-            movement.ImpulseMove(new Vector2(0, jumpVelocity));
+            jumpAudio.PlayRandomClip(audioSource);
+            movement.ImpulseMove(new Vector2(0, jumpVelocity * jumpModifier));
+            jumpModifier = 1;
         }
+    }
+    public event CollisionEvent OnCollision;
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        OnCollision?.Invoke(collision);
     }
 
     #endregion

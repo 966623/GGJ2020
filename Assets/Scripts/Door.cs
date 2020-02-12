@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Door : MonoBehaviour
 {
-    public string nextLevel = "levelX";
+    public string nextLevel = "level_X";
     // Start is called before the first frame update
     void Start()
     {
@@ -20,12 +20,20 @@ public class Door : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        Player player = collision.gameObject.GetComponent<Player>();
+        if (player != null)
         {
-            if (collision.gameObject.GetComponent<OldPlayer>().hasKey)
+            if (player.HasKey)
             {
-                collision.gameObject.GetComponent<OldPlayer>().DoWin(nextLevel);
+                player.SetState(player.winState);
+                StartCoroutine(WinCoroutine());
             }
         }
+    }
+
+    IEnumerator WinCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(nextLevel);
     }
 }

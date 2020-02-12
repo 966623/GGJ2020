@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162f363cbceb6c9449b007b83444fcf8, type: 3}
+  m_Name: PlayerUntape
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: c856984afa219214e8b19c018df6688a, type: 3}
+  - {fileID: 8300000, guid: 8ee023dae389f9e46a90b7bd2d7915de, type: 3}
+  - {fileID: 8300000, guid: 7542af128a811534fa834b4f9f144367, type: 3}
+  - {fileID: 8300000, guid: 902ff5399e70c6c45b80b48e3e28f765, type: 3}

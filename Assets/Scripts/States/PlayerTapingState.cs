@@ -58,6 +58,14 @@ public class PlayerTapingState : State
 
     IEnumerator UpgradePlatform(Platform platform, Platform.Effect effect)
     {
+        if (effect == Platform.Effect.NONE)
+        {
+            player.tapeAudio.PlayRandomClip(player.audioSource);
+        }
+        else
+        {
+            player.specialTapeAudio.PlayRandomClip(player.audioSource);
+        }
         player.animator?.SetTrigger("Upgrade");
         yield return new WaitForSeconds(0.5f);
 
@@ -65,7 +73,7 @@ public class PlayerTapingState : State
 
         platform.isFixed = true;
         platform.currentEffect = effect;
-        player.SetState(player.moveState);    
+        player.SetState(player.moveState);
     }
 
     public override void OnUpdate(float deltaTime)
