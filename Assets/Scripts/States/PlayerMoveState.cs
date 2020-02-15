@@ -8,7 +8,8 @@ public class PlayerMoveState : State
 {
     Player player;
 
-
+    float timeRunning = 0;
+    float timeStopped = 0;
 
     public PlayerMoveState(Player owner) : base(owner.gameObject)
     {
@@ -34,6 +35,9 @@ public class PlayerMoveState : State
         player.gameplay.Downgrade.performed -= StartDowngrade;
 
         player.SpeedModifier = 1;
+
+        player.runAudioSource.Stop();
+
     }
 
     private void Player_OnCollision(Collision2D collision)
@@ -94,9 +98,45 @@ public class PlayerMoveState : State
         player.SetState(player.tapingState);
     }
 
+    bool isRunning = false;
+
     public override void OnUpdate(float deltaTime)
     {
         float scale = player.gameplay.Move.ReadValue<Vector2>().x;
         player.Move(scale);
+        if (scale != 0)
+        {
+            if (!isRunning)
+            {
+                if (timeRunning + timeStopped > 0.5f)
+                {
+                    player.runAudioSource.Play();
+                }
+                timeRunning = 0;
+            }
+            timeRunning += deltaTime;
+            isRunning = true;
+        }
+        else
+        {
+            if (isRunning)
+            {
+                timeStopped = 0;
+            }
+            if (timeRunning + timeStopped > 0.5f)
+            {
+                player.runAudioSource.Stop();
+            }
+            timeStopped += deltaTime;
+            isRunning = false;
+        }
+
+
+    }
+
+    IEnumerator StopRunAudio(float remainingTime)
+    {
+        yield return new WaitForSeconds(remainingTime);
+        player.runAudioSource.Stop();
     }
 }

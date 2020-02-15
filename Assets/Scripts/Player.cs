@@ -84,7 +84,7 @@ public class Player : StateMachine
     public AudioLibrary untapeAudio;
     public AudioLibrary specialTapeAudio;
     public AudioLibrary hurtAudio;
-
+    public AudioSource runAudioSource;
     #endregion Audio
 
     #region States
