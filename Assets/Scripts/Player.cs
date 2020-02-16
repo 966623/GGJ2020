@@ -61,13 +61,20 @@ public class Player : StateMachine
         }
     }
 
+    public event StandardEvent OnHealthChanged;
     int _health = 3;
     public int Health
     {
         get => _health;
         set
         {
-            _health = value;
+            if (value != _health)
+            {
+                _health = value;
+                OnHealthChanged?.Invoke();
+            }
+
+
         }
     }
 
@@ -238,7 +245,11 @@ public class Player : StateMachine
         animator.SetFloat("VerticalSpeed", movement.Velocity.y);
         WasGrounded = Grounded;
         Grounded = movement.grounded;
-      
+        if (movement.Position.y < -30)
+        {
+            Health = 0;
+        }
+
     }
 
     private void FixedUpdate()
@@ -290,10 +301,12 @@ public class Player : StateMachine
             if (_facing == 1)
             {
                 renderer.flipX = true;
+                renderer.material.SetFloat("_ShadowDirection", 1f);
             }
             else if (_facing == -1)
             {
                 renderer.flipX = false;
+                renderer.material.SetFloat("_ShadowDirection", -1f);
             }
         }
     }

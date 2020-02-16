@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FishPlayerSpriteAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: d0df975676f72234fb9c49feb68f3595, type: 3}
+    totalSpriteSurfaceArea: 0
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: ad5c27a09d19b714f853274f02361444, type: 3}
+  - {fileID: 21300000, guid: 3ea182b03f685634080812de821ba942, type: 3}
+  - {fileID: 21300000, guid: 77f933e034d4c1b4a9b5ad0bf205c823, type: 3}
+  - {fileID: 21300000, guid: 3a7446f1a3826694b989b08eface7b54, type: 3}
+  - {fileID: 21300000, guid: dc00fdc39d333db48976d5638ae9d47e, type: 3}
+  - {fileID: 21300000, guid: b9ea84843d2dcee41a36523532f87479, type: 3}
+  - {fileID: 21300000, guid: 22301d353d3681145953dd4201a8cefb, type: 3}
+  - {fileID: 21300000, guid: c4b430c682a92f74583051b266b48942, type: 3}
+  - {fileID: 21300000, guid: 2a8b21a77b9152d41a5a47f5b60dde5c, type: 3}
+  - {fileID: 21300000, guid: 2ce2d1494523b954dba9cda88585166e, type: 3}
+  - {fileID: 21300000, guid: 325aa5f9b19c93048a4775b256ffd4b7, type: 3}
+  - {fileID: 21300000, guid: a676540b7fdc5e54cb4b07fe6d5ebade, type: 3}
+  - {fileID: 21300000, guid: 048c12cbe29a31048ab76bbc6e39ba53, type: 3}
+  - {fileID: 21300000, guid: a29c1a8e89387a84083f975779e4bebf, type: 3}
+  - {fileID: 21300000, guid: c9c6f54fd03d3584b96542ae27e23970, type: 3}
+  - {fileID: 21300000, guid: 672553ff697123a4aab45b6995d5d5a5, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - fish game over 1
+  - fish remove 1
+  - fish crouch
+  - fish run 1
+  - fish fall
+  - fish flinch
+  - fish jump
+  - fish run 2
+  - fish idle 2
+  - fish remove 2
+  - fish game over 2
+  - fish run 4
+  - fish repair 2
+  - fish idle 1
+  - fish repair 1
+  - fish run 3
+  m_Tag: FishPlayerSpriteAtlas
+  m_IsVariant: 0

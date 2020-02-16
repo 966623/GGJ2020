@@ -128,8 +128,8 @@ QualitySettings:
     shadowmaskMode: 1
     skinWeights: 2
     textureQuality: 0
-    anisotropicTextures: 0
-    antiAliasing: 0
+    anisotropicTextures: 2
+    antiAliasing: 8
     softParticles: 0
     softVegetation: 1
     realtimeReflectionProbes: 0
@@ -148,7 +148,8 @@ QualitySettings:
     asyncUploadBufferSize: 16
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
-    customRenderPipeline: {fileID: 0}
+    customRenderPipeline: {fileID: 11400000, guid: 93ec1ebba11d93d4ebf899a68dbea039,
+      type: 2}
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Very High
@@ -229,7 +230,7 @@ QualitySettings:
     PS4: 5
     PSM: 5
     PSP2: 2
-    Standalone: 5
+    Standalone: 3
     Tizen: 2
     WebGL: 3
     WiiU: 5

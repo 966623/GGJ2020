@@ -8,9 +8,6 @@ public class PlayerMoveState : State
 {
     Player player;
 
-    float timeRunning = 0;
-    float timeStopped = 0;
-
     public PlayerMoveState(Player owner) : base(owner.gameObject)
     {
         player = owner;
@@ -23,6 +20,8 @@ public class PlayerMoveState : State
         player.gameplay.DashTape.performed += StartApplyTape;
         player.gameplay.Downgrade.performed += StartDowngrade;
         player.OnCollision += Player_OnCollision;
+        player.runAudioSource.Play();
+        player.runAudioSource.Pause();
     }
 
 
@@ -36,7 +35,7 @@ public class PlayerMoveState : State
 
         player.SpeedModifier = 1;
 
-        player.runAudioSource.Stop();
+        player.runAudioSource.Pause();
 
     }
 
@@ -57,7 +56,14 @@ public class PlayerMoveState : State
         else
         {
 
-            player.SpeedModifier = 1;
+            RaycastHit2D hit = Physics2D.BoxCast(player.movement.Position - new Vector2(0, player.movement.colliderSize.y * 0.25f), new Vector2(player.movement.colliderSize.x * 0.5f, player.movement.colliderSize.y * 0.5f), 0, Vector2.down, .02f, player.movement.groundLayers);
+            if (hit.collider != null && hit.collider.gameObject.GetComponent<PlatformPhysics>() == null)
+            {
+                player.SpeedModifier = 1;
+            }
+            else
+            {
+            }
             player.jumpModifier = 1;
         }
 
@@ -104,39 +110,22 @@ public class PlayerMoveState : State
     {
         float scale = player.gameplay.Move.ReadValue<Vector2>().x;
         player.Move(scale);
+        if (!player.Grounded)
+        {
+            player.runAudioSource.Pause();
+            return;
+        }
         if (scale != 0)
         {
-            if (!isRunning)
-            {
-                if (timeRunning + timeStopped > 0.5f)
-                {
-                    player.runAudioSource.Play();
-                }
-                timeRunning = 0;
-            }
-            timeRunning += deltaTime;
-            isRunning = true;
+           
+            player.runAudioSource.UnPause();
         }
         else
         {
-            if (isRunning)
-            {
-                timeStopped = 0;
-            }
-            if (timeRunning + timeStopped > 0.5f)
-            {
-                player.runAudioSource.Stop();
-            }
-            timeStopped += deltaTime;
-            isRunning = false;
+
+            player.runAudioSource.Pause();
         }
 
 
-    }
-
-    IEnumerator StopRunAudio(float remainingTime)
-    {
-        yield return new WaitForSeconds(remainingTime);
-        player.runAudioSource.Stop();
     }
 }

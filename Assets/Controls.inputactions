@@ -255,6 +255,17 @@
                 },
                 {
                     "name": "",
+                    "id": "e440f652-193d-4cb0-9650-7db6d04bfe41",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Downgrade",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "95888a8d-3147-4ea9-bb69-ce50d230122f",
                     "path": "<Keyboard>/u",
                     "interactions": "",

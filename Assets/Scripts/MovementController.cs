@@ -25,8 +25,14 @@ public class MovementController : MonoBehaviour
         set
         {
             _grounded = value;
-            if (_grounded) OnGrounded?.Invoke(gameObject);
-            else OnLeaveGrounded?.Invoke(gameObject);
+            if (_grounded)
+            {
+                OnGrounded?.Invoke(gameObject);
+            }
+            else
+            {
+                OnLeaveGrounded?.Invoke(gameObject);
+            }
         }
     }
 
@@ -54,7 +60,7 @@ public class MovementController : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
     }
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,7 +72,7 @@ public class MovementController : MonoBehaviour
         // Ground check
         if (body.velocity.y <= 0)
         {
-            RaycastHit2D hit = Physics2D.BoxCast(body.position, colliderSize, 0, Vector2.down, .02f, groundLayers);
+            RaycastHit2D hit = Physics2D.BoxCast(body.position - new Vector2(0, colliderSize.y * 0.25f), new Vector2(colliderSize.x, colliderSize.y * 0.5f), 0, Vector2.down, .02f, groundLayers);
             if (hit.collider != null)
             {
                 grounded = true;

@@ -107,6 +107,7 @@ public class Platform : MonoBehaviour
             switch (currentEffect)
             {
                 case Platform.Effect.NONE:
+                    player.jumpModifier = 1;
                     player.SpeedModifier = 1;
                     break;
                 case Platform.Effect.DASH:
