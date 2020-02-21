@@ -159,6 +159,7 @@ public class MovementController : MonoBehaviour
         if (wantStopMovement)
         {
             body.velocity = Vector2.zero;
+            DesiredVelocity = 0;
             wantStopMovement = false;
         }
         else if (wantOverrideVelocity)
