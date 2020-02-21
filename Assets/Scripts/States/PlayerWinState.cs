@@ -16,7 +16,7 @@ public class PlayerWinState : State
     {
         player.StopAllCoroutines();
         player.invincible = true;
-        player.movement.Velocity = new Vector2(0, 0);
+        player.movement.StopMovement();
         player.StartCoroutine(WinCoroutine());
     }
 

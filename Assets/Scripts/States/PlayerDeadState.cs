@@ -15,7 +15,7 @@ public class PlayerDeadState : State
     public override void OnEnter()
     {
         player.renderer.color = new Color(1, 1, 1, 1f);
-        player.movement.Velocity = new Vector2(0, 0);
+        player.movement.StopMovement();
         player.StartCoroutine(DeathCoroutine());
     }
 

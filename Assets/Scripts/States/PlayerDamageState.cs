@@ -13,7 +13,7 @@ public class PlayerDamageState : State
     }
     public override void OnEnter()
     {
-        player.movement.Velocity = new Vector2(0, 0);
+        player.movement.StopMovement();
         player.StartCoroutine(DamageCoroutine(player.lastHazardHit));
     }
 
@@ -36,7 +36,7 @@ public class PlayerDamageState : State
         player.hurtAudio.PlayRandomClip(player.audioSource);
         player.Health--;
         player.animator?.SetTrigger("Flinch");
-        player.movement.ImpulseMove(new Vector2(4f * Mathf.Sign(player.movement.Position.x - damageSourceTransform.position.x), 4f));
+        player.movement.ForceMove(new Vector2(4f * Mathf.Sign(player.movement.Position.x - damageSourceTransform.position.x), 4f));
         player.StartCoroutine(MakeInvincible());
         yield return new WaitForSeconds(0.5f);
         player.SetState(player.moveState);

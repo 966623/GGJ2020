@@ -22,8 +22,9 @@ public class Player : StateMachine
 
     [HideInInspector]
     public AudioSource audioSource;
-    public float maxSpeed = 10f;
     public float jumpVelocity = 10f;
+    public float jumpHeight = 1f;
+    public float maxSpeed = 10f;
     public float maxAccel = 1f;
     public float maxAirAccel = 1f;
     public LayerMask platformLayer;
@@ -242,9 +243,9 @@ public class Player : StateMachine
 
     public override void OnUpdate(float deltaTime)
     {
-        animator.SetFloat("VerticalSpeed", movement.Velocity.y);
+        animator.SetFloat("VerticalSpeed", movement.velocity.y);
         WasGrounded = Grounded;
-        Grounded = movement.grounded;
+        Grounded = movement.OnGround;
         if (movement.Position.y < -30)
         {
             Health = 0;
@@ -314,30 +315,37 @@ public class Player : StateMachine
     public void Move(float scale)
     {
         hInput = scale;
-        float targetVelocity = maxSpeed * hInput * SpeedModifier;
-        float currentVelocity = movement.Velocity.x;
-        float velocityDifference = targetVelocity - currentVelocity;
-        if (Grounded)
-        {
-            velocityDifference = Mathf.Min(velocityDifference, maxAccel * Time.deltaTime);
-            velocityDifference = Mathf.Max(velocityDifference, -maxAccel * Time.deltaTime);
-        }
-        else
-        {
-            velocityDifference = Mathf.Min(velocityDifference, maxAirAccel * Time.deltaTime);
-            velocityDifference = Mathf.Max(velocityDifference, -maxAirAccel * Time.deltaTime);
-        }
-        movement.ImpulseMove(new Vector2(velocityDifference, 0));
+        //float targetVelocity = maxSpeed * hInput * SpeedModifier;
+        //float currentVelocity = movement.Velocity.x;
+        //float velocityDifference = targetVelocity - currentVelocity;
+        //if (Grounded)
+        //{
+        //    velocityDifference = Mathf.Min(velocityDifference, maxAccel * Time.deltaTime);
+        //    velocityDifference = Mathf.Max(velocityDifference, -maxAccel * Time.deltaTime);
+        //}
+        //else
+        //{
+        //    velocityDifference = Mathf.Min(velocityDifference, maxAirAccel * Time.deltaTime);
+        //    velocityDifference = Mathf.Max(velocityDifference, -maxAirAccel * Time.deltaTime);
+        //}
+
+
+
+        movement.DesiredVelocity = hInput * SpeedModifier * maxSpeed;
+        //movement.ImpulseMove(new Vector2(velocityDifference, 0));
     }
 
     public void Jump(InputAction.CallbackContext obj = new InputAction.CallbackContext())
     {
-        if (Grounded)
-        {
-            jumpAudio.PlayRandomClip(audioSource);
-            movement.ImpulseMove(new Vector2(0, jumpVelocity * jumpModifier));
-            jumpModifier = 1;
-        }
+        //if (Grounded)
+        //{
+        //    jumpAudio.PlayRandomClip(audioSource);
+        //    movement.WantJump = true;
+        //    jumpModifier = 1;
+        //}
+
+        movement.WantJump = true;
+
     }
     public event CollisionEvent OnCollision;
 

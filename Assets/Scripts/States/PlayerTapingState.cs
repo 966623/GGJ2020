@@ -14,7 +14,7 @@ public class PlayerTapingState : State
     }
     public override void OnEnter()
     {
-        player.movement.Velocity = new Vector2(0, 0);
+        player.movement.StopMovement();
         TryApplyUpgrade(player.tapeQueue);
     }
 

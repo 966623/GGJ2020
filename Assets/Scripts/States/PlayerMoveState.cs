@@ -72,7 +72,7 @@ public class PlayerMoveState : State
 
     private void StartDowngrade(InputAction.CallbackContext obj)
     {
-        if (!player.movement.grounded)
+        if (!player.movement.OnGround)
         {
             return;
         }
@@ -83,7 +83,7 @@ public class PlayerMoveState : State
 
     void StartApplyTape(InputAction.CallbackContext obj)
     {
-        if (!player.movement.grounded)
+        if (!player.movement.OnGround)
         {
             return;
         }
