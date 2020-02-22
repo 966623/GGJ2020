@@ -68,24 +68,6 @@ public class MovementController : MonoBehaviour
     public event GroundEvent OnLeaveGrounded;
 
     public bool OnGround => _numGroundContacts > 0;
-    //{
-    //    get
-    //    {
-    //        return _onGround;
-    //    }
-    //    set
-    //    {
-    //        _onGround = value;
-    //        if (_onGround)
-    //        {
-    //            OnGrounded?.Invoke(gameObject);
-    //        }
-    //        else
-    //        {
-    //            OnLeaveGrounded?.Invoke(gameObject);
-    //        }
-    //    }
-    //}
 
     int _numGroundContacts = 0;
     int NumGroundContacts
@@ -114,6 +96,10 @@ public class MovementController : MonoBehaviour
     {
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
     }
+
+    //Events
+    public event Action OnJump;
+    // ----
 
     private void Awake()
     {
@@ -150,6 +136,7 @@ public class MovementController : MonoBehaviour
                 jumpSpeed = Mathf.Max(jumpSpeed - velocity.y, 0);
             }
             velocity.y += jumpSpeed;
+            OnJump?.Invoke();
         }
         else
         {
@@ -183,8 +170,6 @@ public class MovementController : MonoBehaviour
         {
             OnLeaveGrounded?.Invoke(gameObject);
         }
-
-
 
         ClearState();
     }

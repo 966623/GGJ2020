@@ -1403,35 +1403,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5148349020404568293, guid: 0ab01587a106c0e47a4d328f8cd73cbb,
-        type: 3}
-      propertyPath: maxSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5148349020404568293, guid: 0ab01587a106c0e47a4d328f8cd73cbb,
-        type: 3}
-      propertyPath: maxAccel
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 5148349020404568293, guid: 0ab01587a106c0e47a4d328f8cd73cbb,
-        type: 3}
-      propertyPath: maxAirAccel
-      value: 14
-      objectReference: {fileID: 0}
     - target: {fileID: 9142829822466830364, guid: 0ab01587a106c0e47a4d328f8cd73cbb,
         type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 9142829822466830365, guid: 0ab01587a106c0e47a4d328f8cd73cbb,
-        type: 3}
-      propertyPath: initialTapeCount.Array.data[1]
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9142829822466830365, guid: 0ab01587a106c0e47a4d328f8cd73cbb,
-        type: 3}
-      propertyPath: initialTapeCount.Array.data[2]
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9142829822466830367, guid: 0ab01587a106c0e47a4d328f8cd73cbb,
         type: 3}

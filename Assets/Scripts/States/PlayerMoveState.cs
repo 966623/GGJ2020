@@ -64,7 +64,7 @@ public class PlayerMoveState : State
             else
             {
             }
-            player.jumpModifier = 1;
+            player.movement.jumpModifier = 1;
         }
 
 

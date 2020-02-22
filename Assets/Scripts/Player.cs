@@ -174,6 +174,7 @@ public class Player : StateMachine
         movement.OnGrounded += (g) => { animator?.SetBool("Grounded", true); };
         movement.OnGrounded += (g) => { airTime = 0; };
         movement.OnLeaveGrounded += (g) => { animator?.SetBool("Grounded", false); };
+        movement.OnJump += () => jumpAudio.PlayRandomClip(audioSource);
 
         // init tape inventory
         foreach (Platform.Effect effect in (Platform.Effect[])Platform.Effect.GetValues(typeof(Platform.Effect)))
@@ -222,6 +223,7 @@ public class Player : StateMachine
         );
 
         globalTransitions.Add(new TransitionStatePair(deadTransition, deadState));
+
 
         SetState(moveState);
     }
@@ -315,41 +317,21 @@ public class Player : StateMachine
     public void Move(float scale)
     {
         hInput = scale;
-        //float targetVelocity = maxSpeed * hInput * SpeedModifier;
-        //float currentVelocity = movement.Velocity.x;
-        //float velocityDifference = targetVelocity - currentVelocity;
-        //if (Grounded)
-        //{
-        //    velocityDifference = Mathf.Min(velocityDifference, maxAccel * Time.deltaTime);
-        //    velocityDifference = Mathf.Max(velocityDifference, -maxAccel * Time.deltaTime);
-        //}
-        //else
-        //{
-        //    velocityDifference = Mathf.Min(velocityDifference, maxAirAccel * Time.deltaTime);
-        //    velocityDifference = Mathf.Max(velocityDifference, -maxAirAccel * Time.deltaTime);
-        //}
-
-
-
         movement.DesiredVelocity = hInput * SpeedModifier * maxSpeed;
-        //movement.ImpulseMove(new Vector2(velocityDifference, 0));
     }
 
     public void Jump(InputAction.CallbackContext obj = new InputAction.CallbackContext())
     {
-        //if (Grounded)
-        //{
-        //    jumpAudio.PlayRandomClip(audioSource);
-        //    movement.WantJump = true;
-        //    jumpModifier = 1;
-        //}
-
         movement.WantJump = true;
-
     }
     public event CollisionEvent OnCollision;
 
     private void OnCollisionEnter2D(Collision2D collision)
+    {
+        OnCollision?.Invoke(collision);
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
     {
         OnCollision?.Invoke(collision);
     }
